@@ -117,7 +117,7 @@ public class Game {
 		mountainsMoving = new Background();
 		groundMoving = new Background();
 
-		font = new Font("monospaced", Font.BOLD, 18);
+		font = new Font("monospaced", Font.BOLD, 36);
 
 		enemiesKilled = 0;
 		enemiesRanaway = 0;
@@ -330,11 +330,11 @@ public class Game {
 
 		tmpStr = formatTime(gameTime);
 		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
-				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2), 21);
-		g2d.drawString("DESTROYED: " + enemiesKilled, 10, 21);
-		g2d.drawString("RANAWAY: " + enemiesRanaway, 10, 41);
-		g2d.drawString("ROCKETS: " + player.numberOfRockets, 10, 81);
-		g2d.drawString("AMMO: " + player.numberOfBullets, 10, 101);
+				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2), 41);
+		g2d.drawString("DESTROYED: " + enemiesKilled, 10, 41);
+		g2d.drawString("RANAWAY: " + enemiesRanaway, 10, 81);
+		g2d.drawString("ROCKETS: " + player.numberOfRockets, 10, 121);
+		g2d.drawString("AMMO: " + player.numberOfBullets, 10, 161);
 
 		// Moving images in front of helicopter
 		cloudLayer1Moving.Draw(g2d);
@@ -353,33 +353,38 @@ public class Game {
 	 * @param gameTime
 	 *            Elapsed game time
 	 */
-	public void DrawStatistic(Graphics2D g2d, long gameTime) {
+	public void DrawStatistics(Graphics2D g2d, long gameTime) {
+		g2d.setFont(font);
 		tmpStr = "Time: " + formatTime(gameTime);
 		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
 				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-				Framework.frameHeight / 3 + 80);
+				Framework.frameHeight / 3 + 100);
 		tmpStr = "Rockets left: " + player.numberOfRockets;
 		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
 				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-				Framework.frameHeight / 3 + 105);
+				Framework.frameHeight / 3 + 140);
 		tmpStr = "Ammo left: " + player.numberOfBullets;
 		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
 				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-				Framework.frameHeight / 3 + 125);
+				Framework.frameHeight / 3 + 180);
 		tmpStr = "Enemies Killed: " + enemiesKilled;
 		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
 				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-				Framework.frameHeight / 3 + 150);
+				Framework.frameHeight / 3 + 220);
 		tmpStr = "Enemies Fled: " + enemiesRanaway;
 		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
 				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-				Framework.frameHeight / 3 + 170);
+				Framework.frameHeight / 3 + 260);
 
-		g2d.setFont(font);
 		tmpStr = "Statistics: ";
+		g2d.setColor(Color.BLACK);
+		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
+				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2) + 2,
+				Framework.frameHeight / 3 + 60);
+		g2d.setColor(Color.WHITE);
 		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
 				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-				Framework.frameHeight / 3 + 60);
+				Framework.frameHeight / 3 + 60 - 2);
 	}
 
 	/**

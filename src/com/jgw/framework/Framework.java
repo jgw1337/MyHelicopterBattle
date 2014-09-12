@@ -81,7 +81,7 @@ public class Framework extends Canvas {
 	 * objects for actual game set in Game.java
 	 */
 	private void Initialize() {
-		font = new Font("monospaced", Font.BOLD, 28);
+		font = new Font("monospaced", Font.BOLD, 36);
 	}
 
 	/**
@@ -208,24 +208,30 @@ public class Framework extends Canvas {
 			break;
 		case GAMEOVER:
 			drawMenuBackground(g2d);
+			g2d.setFont(font);
 			g2d.setColor(Color.BLACK);
 			tmpStr = "Press ENTER to restart or ESC to exit";
 			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/4 + 30);
-			game.DrawStatistic(g2d, gameTime);
-			g2d.setFont(font);
+			game.DrawStatistics(g2d, gameTime);
 			tmpStr = "GAME OVER";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/4);
+			g2d.setColor(Color.BLACK);
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2) + 2, frameHeight/4);
+			g2d.setColor(Color.WHITE);
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/4 - 2);
 			break;
 		case MAIN_MENU:
 			drawMenuBackground(g2d);
 			g2d.drawImage(gameTitleImg, frameWidth/2 - gameTitleImg.getWidth()/2, frameHeight/4, null);
+			g2d.setFont(font);
 			g2d.setColor(Color.BLACK);
-			tmpStr = "Use w-a-d or arrow keys to move the helicopter.";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 - 30);
-			tmpStr = "Use left mouse button to fire bullets and right mouse button to fire rockets.";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2);
+			tmpStr = "Use w-a-s-d or arrow keys to move the helicopter.";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 - 60);
+			tmpStr = "Use left mouse button to fire bullets.";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 - 20);
+			tmpStr = "Use right mouse button to fire rockets.";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 20);
 			tmpStr = "Press any key to start the game or ESC to exit.";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 30);
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 100);
 			break;
 		case OPTIONS:
 
