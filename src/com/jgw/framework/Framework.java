@@ -1,9 +1,18 @@
 package com.jgw.framework;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 /**
  * Framework that controls game (Game.java) that created, updated, and drew it
@@ -40,6 +49,16 @@ public class Framework extends Canvas {
 	// Actual game
 	private Game game;
 
+	// Temporary String (placeholder)
+	private String tmpStr;
+
+	// Font
+	private Font font;
+
+	// Menu images
+	private BufferedImage gameTitleImg, menuBorderImg, skyColorImg,
+			cloudLayer1Img, cloudLayer2Img;
+
 	public Framework() {
 		super();
 
@@ -62,8 +81,7 @@ public class Framework extends Canvas {
 	 * objects for actual game set in Game.java
 	 */
 	private void Initialize() {
-		// TODO Auto-generated method stub
-
+		font = new Font("monospaced", Font.BOLD, 28);
 	}
 
 	/**
@@ -73,8 +91,29 @@ public class Framework extends Canvas {
 	 * Game.java
 	 */
 	private void LoadContent() {
-		// TODO Auto-generated method stub
+		try {
+			URL menuBorderImgUrl = this.getClass().getResource(
+					"data/menu_border.png");
+			menuBorderImg = ImageIO.read(menuBorderImgUrl);
 
+			URL skyColorImgUrl = this.getClass().getResource(
+					"data/sky_color.jpg");
+			skyColorImg = ImageIO.read(skyColorImgUrl);
+
+			URL gameTitleImgUrl = this.getClass().getResource("data/title.png");
+			gameTitleImg = ImageIO.read(gameTitleImgUrl);
+
+			URL cloudLayer1ImgUrl = this.getClass().getResource(
+					"data/cloud_layer_1.png");
+			cloudLayer1Img = ImageIO.read(cloudLayer1ImgUrl);
+
+			URL cloudLayer2ImgUrl = this.getClass().getResource(
+					"data/cloud_layer_2.png");
+			cloudLayer2Img = ImageIO.read(cloudLayer2ImgUrl);
+		} catch (IOException ex) {
+			Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null,
+					ex);
+		}
 	}
 
 	/**
@@ -132,31 +171,34 @@ public class Framework extends Canvas {
 				}
 				break;
 			}
-			
+
 			// Repaint screen
 			repaint();
-			
-			// Calc the time that defines how long to put thread to sleep to meet GAME_FPS
-			timeTaken = System.nanoTime() - beginTime;
-			timeLeft = (GAME_UPDATE_PERIOD - timeTaken) / millisecInNanosec;  // in nanosecs
 
-			// If time is less than 10 ms, the put thread to sleep for another 10 ms so another thread can work
+			// Calc the time that defines how long to put thread to sleep to
+			// meet GAME_FPS
+			timeTaken = System.nanoTime() - beginTime;
+			timeLeft = (GAME_UPDATE_PERIOD - timeTaken) / millisecInNanosec; // in
+																				// nanosecs
+
+			// If time is less than 10 ms, the put thread to sleep for another
+			// 10 ms so another thread can work
 			if (timeLeft < 10) {
-				timeLeft = 10;  // set a min value
+				timeLeft = 10; // set a min value
 			}
-			
+
 			try {
-				// Provides the necessary delay and yields control so another thread can work
+				// Provides the necessary delay and yields control so another
+				// thread can work
 				Thread.sleep(timeLeft);
 			} catch (InterruptedException e) {
 				// TODO: handle exception
 			}
 		}
 	}
-	
-	
+
 	/**
-	 * Draw game on screen.  It is called in the repaint() and GameLoop() methods
+	 * Draw game on screen. It is called in the repaint() and GameLoop() methods
 	 */
 	@Override
 	public void Draw(Graphics2D g2d) {
@@ -165,21 +207,37 @@ public class Framework extends Canvas {
 			game.Draw(g2d, mousePosition());
 			break;
 		case GAMEOVER:
-			
+			drawMenuBackground(g2d);
+			g2d.setColor(Color.BLACK);
+			tmpStr = "Press ENTER to restart or ESC to exit";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/4 + 30);
+			game.DrawStatistic(g2d, gameTime);
+			g2d.setFont(font);
+			tmpStr = "GAME OVER";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/4);
 			break;
 		case MAIN_MENU:
-			
+			drawMenuBackground(g2d);
+			g2d.drawImage(gameTitleImg, frameWidth/2 - gameTitleImg.getWidth()/2, frameHeight/4, null);
+			g2d.setColor(Color.BLACK);
+			tmpStr = "Use w-a-d or arrow keys to move the helicopter.";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 - 30);
+			tmpStr = "Use left mouse button to fire bullets and right mouse button to fire rockets.";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2);
+			tmpStr = "Press any key to start the game or ESC to exit.";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 30);
 			break;
 		case OPTIONS:
-			
+
 			break;
 		case GAME_CONTENT_LOADING:
-			
+			g2d.setColor(Color.WHITE);
+			tmpStr = "GAME is LOADING";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2);
 			break;
 		}
 	}
-	
-	
+
 	/**
 	 * Starts new game
 	 */
@@ -187,37 +245,37 @@ public class Framework extends Canvas {
 		// Set gameTime to zero and lastTime to current time for later calcs
 		gameTime = 0;
 		lastTime = System.nanoTime();
-		
+
 		game = new Game();
 	}
-	
-	
+
 	/**
 	 * Restart game
-	 * <p>Resets gameTime and calls RestartGame() method of game object so some vars are reset
+	 * <p>
+	 * Resets gameTime and calls RestartGame() method of game object so some
+	 * vars are reset
 	 */
 	private void restartGame() {
 		// Set gameTime to zero and lastTime to current time for later calcs
 		gameTime = 0;
 		lastTime = System.nanoTime();
-		
+
 		game.RestartGame();
-		
+
 		// Change game state so game can start
 		gameState = GameState.PLAYING;
 	}
-	
-	
+
 	/**
-	 * Returns position of mouse in frame/window.
-	 * If mouse position is null, then return 0,0 coords
+	 * Returns position of mouse in frame/window. If mouse position is null,
+	 * then return 0,0 coords
 	 * 
-	 * @return	Point of mouse coords
+	 * @return Point of mouse coords
 	 */
 	private Point mousePosition() {
 		try {
 			Point mp = this.getMousePosition();
-			
+
 			if (mp != null) {
 				return this.getMousePosition();
 			} else {
@@ -227,19 +285,31 @@ public class Framework extends Canvas {
 			return new Point(0, 0);
 		}
 	}
-	
+
 	/**
 	 * Keyboard key released method
 	 * 
-	 * @param e	KeyEvent
+	 * @param e
+	 *            KeyEvent
 	 */
 	@Override
 	public void keyReleasedFramework(KeyEvent e) {
-		// TODO Auto-generated method stub
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			System.exit(0);
+		}
 		
+		switch (gameState) {
+		case GAMEOVER:
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				restartGame();
+			}
+			break;
+		case MAIN_MENU:
+			newGame();
+			break;
+		}
 	}
-	
-	
+
 	/**
 	 * Mouse clicked method
 	 */
@@ -247,5 +317,16 @@ public class Framework extends Canvas {
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	
+	private void drawMenuBackground(Graphics2D g2d) {
+		g2d.drawImage(skyColorImg, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
+		g2d.drawImage(cloudLayer1Img, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
+		g2d.drawImage(cloudLayer2Img, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
+		g2d.drawImage(menuBorderImg, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
+		g2d.setColor(Color.WHITE);
+		tmpStr = "-jgw-";
+		g2d.drawString(tmpStr, 7, frameHeight - 5);
 	}
 }
