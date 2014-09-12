@@ -204,7 +204,7 @@ public class Framework extends Canvas {
 	public void Draw(Graphics2D g2d) {
 		switch (gameState) {
 		case PLAYING:
-			game.Draw(g2d, mousePosition());
+			game.Draw(g2d, mousePosition(), gameTime);
 			break;
 		case GAMEOVER:
 			drawMenuBackground(g2d);

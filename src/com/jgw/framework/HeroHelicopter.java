@@ -1,5 +1,255 @@
 package com.jgw.framework;
 
-public class HeroHelicopter {
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
+
+public class HeroHelicopter {
+	// Health
+	private final int healthInit = 100;
+	public int health;
+
+	// Position
+	public int xCoord, yCoord;
+
+	// Speed and direction
+	private double movingXSpeed;
+	public double movingYSpeed;
+	private double acceleratingXSpeed, acceleratingYSpeed;
+	private double stoppingXSpeed, stoppingYSpeed;
+
+	// Rockets
+	private final int numberOfRocketsInit = 80;
+	public int numberOfRockets;
+
+	// Bullets
+	private final int numberOfBulletsInit = 1400;
+	public int numberOfBullets;
+
+	// Images
+	public BufferedImage heliBodyImg;
+	private BufferedImage heliFrontPropellerAnimImg, heliRearPropellerAnimImg;
+
+	// Propeller animation
+	private Animation heliFrontPropellerAnim, heliRearPropellerAnim;
+
+	// Propeller offsets (relative to the helicopter)
+	private int offsetXFrontPropeller, offsetYFrontPropeller;
+	private int offsetXRearPropeller, offsetYRearPropeller;
+
+	// Rocket launcher offsets (relative to helicopter)
+	private int offsetXRocketLauncher, offsetYRocketLauncher;
+
+	// Position of rocket launcher
+	public int rocketLauncherXCoord, rocketLauncherYCoord;
+
+	// Gun offsets (relative to helicopter)
+	private int offsetXGun, offsetYGun;
+
+	// Position of gun
+	public int gunXCoord, gunYCoord;
+
+	/**
+	 * Creates player
+	 * 
+	 * @param xCoord
+	 *            Starting x-coord
+	 * @param yCoord
+	 *            Starting x-coord
+	 */
+	public HeroHelicopter(int xCoord, int yCoord) {
+		this.xCoord = xCoord;
+		this.yCoord = yCoord;
+
+		LoadContent();
+		Initialize();
+	}
+
+	/**
+	 * Set vars and objs
+	 */
+	private void Initialize() {
+		this.health = healthInit;
+
+		this.numberOfRockets = numberOfRocketsInit;
+		this.numberOfBullets = numberOfBulletsInit;
+
+		this.movingXSpeed = 0;
+		this.movingYSpeed = 0;
+		this.acceleratingXSpeed = 0.2;
+		this.acceleratingYSpeed = 0.2;
+		this.stoppingXSpeed = 0.1;
+		this.stoppingYSpeed = 0.1;
+
+		this.offsetXFrontPropeller = 70;
+		this.offsetYFrontPropeller = -23;
+		this.offsetXRearPropeller = -6;
+		this.offsetYRearPropeller = -21;
+
+		this.offsetXRocketLauncher = 138;
+		this.offsetYRocketLauncher = 40;
+		this.rocketLauncherXCoord = this.xCoord + this.offsetXRocketLauncher;
+		this.rocketLauncherYCoord = this.yCoord + this.offsetYRocketLauncher;
+
+		this.offsetXGun = heliBodyImg.getWidth() - 40;
+		this.offsetYGun = heliBodyImg.getHeight();
+		this.gunXCoord = this.xCoord + this.offsetXGun;
+		this.gunYCoord = this.yCoord + this.offsetYGun;
+	}
+
+	/**
+	 * Load files
+	 */
+	private void LoadContent() {
+		try {
+			URL heliBodyImgUrl = this.getClass().getResource(
+					"data/1_helicopter_body.png");
+			heliBodyImg = ImageIO.read(heliBodyImgUrl);
+
+			URL heliFrontPropellerAnimImgUrl = this.getClass().getResource(
+					"data/1_front_propeller_anim.png");
+			heliFrontPropellerAnimImg = ImageIO
+					.read(heliFrontPropellerAnimImgUrl);
+
+			URL heliRearPropellerAnimImgUrl = this.getClass().getResource(
+					"data/1_rear_propeller_anim_blur.png");
+			heliRearPropellerAnimImg = ImageIO
+					.read(heliRearPropellerAnimImgUrl);
+		} catch (IOException ex) {
+			Logger.getLogger(HeroHelicopter.class.getName()).log(Level.SEVERE,
+					null, ex);
+		}
+		
+		// Now that propeller animation images are loaded, initialize the animation object
+		heliFrontPropellerAnim = new Animation(heliFrontPropellerAnimImg, 204, 34, 3, 20, true, xCoord + offsetXFrontPropeller, yCoord + offsetYFrontPropeller, 0);
+		heliRearPropellerAnim = new Animation(heliRearPropellerAnimImg, 54, 54, 4, 20, true, xCoord + offsetXRearPropeller, yCoord + offsetYRearPropeller, 0);
+	}
+	
+	
+	/**
+	 * Resets player
+	 * 
+	 * @param xCoord	Starting x-coord
+	 * @param yCoord	Starting y-coord
+	 */
+	public void Reset(int xCoord, int yCoord) {
+		this.health = healthInit;
+
+		this.numberOfRockets = numberOfRocketsInit;
+		this.numberOfBullets = numberOfBulletsInit;
+
+		this.xCoord = xCoord;
+		this.yCoord = yCoord;
+		
+		this.movingXSpeed = 0;
+		this.movingYSpeed = 0;
+
+		this.rocketLauncherXCoord = this.xCoord + this.offsetXRocketLauncher;
+		this.rocketLauncherYCoord = this.yCoord + this.offsetYRocketLauncher;
+
+		this.gunXCoord = this.xCoord + this.offsetXGun;
+		this.gunYCoord = this.yCoord + this.offsetYGun;
+	}
+	
+	
+	/**
+	 * Checks if player is shooting; also checks if player can shoot (reload aka time between bullets and remaining ammo)
+	 * 
+	 * @param gameTime	Current elapsed time (in nanosecs)
+	 * @return true if shooting, false otherwise
+	 */
+	public boolean isShooting(long gameTime) {
+		// Checks is left mouse is down and if it is time for a new bullet
+		if (Canvas.mouseButtonState(MouseEvent.BUTTON1) && ((gameTime - Bullet.timeOfLastCreatedBullet) >= Bullet.timeBetweenNewBullets && this.numberOfBullets > 0)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * Checks if player is launching a rocket; also checks if player can fire rocket (reload aka time between rockets and remaining rockets)
+	 * 
+	 * @param gameTime	Current elapsed time (in nanosecs)
+	 * @return true if shooting, false otherwise
+	 */
+	public boolean isFiringRocket(long gameTime) {
+		if (Canvas.mouseButtonState(MouseEvent.BUTTON3) && ((gameTime - Rocket.timeOfLastCreatedRocket) >= Rocket.timeBetweenNewRockets && this.numberOfRockets > 0)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * Sets its speed and direction
+	 */
+	public void setVelocity() {
+		// Moving on x-axis
+		if (Canvas.keyboardKeyState(KeyEvent.VK_D) || Canvas.keyboardKeyState(KeyEvent.VK_RIGHT)) {
+			movingXSpeed += acceleratingXSpeed;
+		} else if (Canvas.keyboardKeyState(KeyEvent.VK_A) || Canvas.keyboardKeyState(KeyEvent.VK_LEFT)) {
+			movingXSpeed -= acceleratingXSpeed;
+		} else { // Stopping
+			if (movingXSpeed < 0) {
+				movingXSpeed += stoppingXSpeed;
+			} else if (movingXSpeed > 0) {
+				movingXSpeed -= stoppingXSpeed;
+			}
+		}
+		
+		// Moving on y-axis
+		if (Canvas.keyboardKeyState(KeyEvent.VK_W) || Canvas.keyboardKeyState(KeyEvent.VK_UP)) {
+			movingYSpeed -= acceleratingYSpeed;
+		} else if (Canvas.keyboardKeyState(KeyEvent.VK_S) || Canvas.keyboardKeyState(KeyEvent.VK_DOWN)) {
+			movingYSpeed += acceleratingYSpeed;
+		} else { // Stopping
+			if (movingYSpeed < 0) {
+				movingYSpeed += stoppingYSpeed;
+			} else if (movingYSpeed > 0) {
+				movingYSpeed -= stoppingYSpeed;
+			}
+		}
+	}
+	
+	
+	/**
+	 * Updates position
+	 */
+	public void Update() {
+		// Move
+		xCoord += movingXSpeed;
+		yCoord += movingYSpeed;
+		heliFrontPropellerAnim.changeCoordinates(xCoord + offsetXFrontPropeller, yCoord + offsetYFrontPropeller);
+		heliRearPropellerAnim.changeCoordinates(xCoord + offsetXRearPropeller, yCoord + offsetYRearPropeller);
+		
+		// Change Rocket position accordingly
+		this.rocketLauncherXCoord = this.xCoord + this.offsetXRocketLauncher;
+		this.rocketLauncherYCoord = this.yCoord + this.offsetYRocketLauncher;
+		
+		// Change Gun position accordingly
+		this.gunXCoord = this.xCoord + this.offsetXGun;
+		this.gunYCoord = this.yCoord + this.offsetYGun;
+	}
+	
+	
+	/**
+	 * Draws image
+	 * 
+	 * @param g2d	Graphics2D
+	 */
+	public void Draw(Graphics2D g2d) {
+		heliFrontPropellerAnim.Draw(g2d);
+		heliRearPropellerAnim.Draw(g2d);
+		g2d.drawImage(heliBodyImg, xCoord, yCoord, null);
+	}
 }
