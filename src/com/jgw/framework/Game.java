@@ -249,7 +249,7 @@ public class Game {
 		/**
 		 * Mouse
 		 */
-		limitMousePosition(mousePosition);
+//		limitMousePosition(mousePosition);
 
 		/**
 		 * Bullets
@@ -326,15 +326,38 @@ public class Game {
 
 		// Stats
 		g2d.setFont(font);
-		g2d.setColor(Color.DARK_GRAY);
 
 		tmpStr = formatTime(gameTime);
+		g2d.setColor(Color.DARK_GRAY);
 		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
-				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2), 41);
-		g2d.drawString("DESTROYED: " + enemiesKilled, 10, 41);
-		g2d.drawString("RANAWAY: " + enemiesRanaway, 10, 81);
-		g2d.drawString("ROCKETS: " + player.numberOfRockets, 10, 121);
-		g2d.drawString("AMMO: " + player.numberOfBullets, 10, 161);
+				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2) + 2, 41);
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
+				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2), 41 - 2);
+
+		tmpStr = "DESTROYED: " + enemiesKilled;
+		g2d.setColor(Color.DARK_GRAY);
+		g2d.drawString(tmpStr, 10 + 2, 41);
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(tmpStr, 10, 41 - 2);
+
+		tmpStr = "RANAWAY: " + enemiesRanaway;
+		g2d.setColor(Color.DARK_GRAY);
+		g2d.drawString(tmpStr, 10 + 2, 81);
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(tmpStr, 10, 81 - 2);
+
+		tmpStr = "ROCKETS: " + player.numberOfRockets;
+		g2d.setColor(Color.DARK_GRAY);
+		g2d.drawString(tmpStr, 10 + 2, 121);
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(tmpStr, 10, 121 - 2);
+
+		tmpStr = "AMMO: " + player.numberOfBullets;
+		g2d.setColor(Color.DARK_GRAY);
+		g2d.drawString(tmpStr, 10 + 2, 161);
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(tmpStr, 10, 161 - 2);
 
 		// Moving images in front of helicopter
 		cloudLayer1Moving.Draw(g2d);
@@ -376,7 +399,7 @@ public class Game {
 				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
 				Framework.frameHeight / 3 + 260);
 
-		tmpStr = "Statistics: ";
+		tmpStr = "STATISTICS: ";
 		g2d.setColor(Color.BLACK);
 		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
 				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2) + 2,

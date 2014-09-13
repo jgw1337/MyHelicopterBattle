@@ -207,6 +207,15 @@ public class HeroHelicopter {
 			}
 		}
 		
+		// Kludge to prevent helicopter from moving offscreen along x-axis
+		if (this.xCoord  <= 0 ) {
+			movingXSpeed = 0;
+			this.xCoord = 1;
+		} else if (this.xCoord + this.heliBodyImg.getWidth() >= Framework.frameWidth) {
+			movingXSpeed = 0;
+			this.xCoord = Framework.frameWidth - this.heliBodyImg.getWidth() - 1;
+		}
+		
 		// Moving on y-axis
 		if (Canvas.keyboardKeyState(KeyEvent.VK_W) || Canvas.keyboardKeyState(KeyEvent.VK_UP)) {
 			movingYSpeed -= acceleratingYSpeed;
@@ -219,7 +228,17 @@ public class HeroHelicopter {
 				movingYSpeed -= stoppingYSpeed;
 			}
 		}
-	}
+
+		// Kludge to prevent helicopter from moving offscreen along y-axis
+		if (this.yCoord  <= 0 ) {
+			movingYSpeed = 0;
+			this.yCoord = 1;
+		} else if (this.yCoord + this.heliBodyImg.getHeight() >= Framework.frameHeight) {
+			movingYSpeed = 0;
+			this.yCoord = Framework.frameHeight - this.heliBodyImg.getHeight() - 1;
+		}
+		
+}
 	
 	
 	/**
