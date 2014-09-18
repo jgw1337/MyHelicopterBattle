@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 public class Window extends JFrame {
 	public Window() {
 		// Title
-		this.setTitle("The Legend of Super Mega Planet-vania-oid");
+		this.setTitle("My Helicopter Battle");
 
 		if (true) {
 			// Disables decorations
