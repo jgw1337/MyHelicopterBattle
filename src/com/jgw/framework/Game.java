@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -73,14 +74,14 @@ public class Game {
 	// Temporary String (placeholder)
 	private String tmpStr;
 
-	public Game() {
+	public Game(final KeyEvent heliStyle) {
 		Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
 
 		Thread threadForInitGame = new Thread() {
 			@Override
 			public void run() {
 				// Sets variables and objects for game
-				Initialize();
+				Initialize(heliStyle);
 				// Load game files (images, sounds, etc.)
 				LoadContent();
 
@@ -91,7 +92,7 @@ public class Game {
 	}
 
 	// Sets variables and objects for game
-	private void Initialize() {
+	private void Initialize(KeyEvent heliStyle) {
 		rand = new Random();
 
 		try {
@@ -101,7 +102,7 @@ public class Game {
 		}
 
 		player = new HeroHelicopter(Framework.frameWidth / 4,
-				Framework.frameHeight / 4);
+				Framework.frameHeight / 4, heliStyle);
 
 		enemyHelicopterList = new ArrayList<EnemyHelicopter>();
 
@@ -260,7 +261,9 @@ public class Game {
 		/**
 		 * Mouse
 		 */
-		// limitMousePosition(mousePosition);
+		if (player.style == "frank" || player.style == "marcus") {
+			limitMousePosition(mousePosition);
+		}
 
 		/**
 		 * Bullets

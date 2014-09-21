@@ -232,6 +232,10 @@ public class Framework extends Canvas {
 			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 20);
 			tmpStr = "Press any key to start the game or ESC to exit.";
 			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 100);
+			tmpStr = "Select a character...";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 180);
+			tmpStr = "[E]sther, [F]rank, [G]lenn, [J]ohn, [M]arcus, [W]ade, or any other key.";
+			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 220);
 			break;
 		case OPTIONS:
 
@@ -247,12 +251,12 @@ public class Framework extends Canvas {
 	/**
 	 * Starts new game
 	 */
-	private void newGame() {
+	private void newGame(KeyEvent heliStyle) {
 		// Set gameTime to zero and lastTime to current time for later calcs
 		gameTime = 0;
 		lastTime = System.nanoTime();
 
-		game = new Game();
+		game = new Game(heliStyle);
 	}
 
 	/**
@@ -311,7 +315,7 @@ public class Framework extends Canvas {
 			}
 			break;
 		case MAIN_MENU:
-			newGame();
+			newGame(e);
 			break;
 		}
 	}
