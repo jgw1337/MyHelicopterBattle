@@ -44,6 +44,7 @@ public class Game {
 
 	// Rockets
 	private ArrayList<Rocket> rocketList;
+	private ArrayList<HomingRocket> homingRocketList;
 	// Rocket smoke
 	private ArrayList<RocketSmoke> rocketSmokeList;
 
@@ -109,6 +110,7 @@ public class Game {
 		bulletList = new ArrayList<Bullet>();
 
 		rocketList = new ArrayList<Rocket>();
+		homingRocketList = new ArrayList<HomingRocket>();
 		rocketSmokeList = new ArrayList<RocketSmoke>();
 
 		// Moving images
@@ -162,6 +164,11 @@ public class Game {
 					"data/rocket_smoke.png");
 			RocketSmoke.smokeImg = ImageIO.read(rocketSmokeImgUrl);
 
+			// Homing Rocket
+			URL homingRocketImgUrl = this.getClass().getResource(
+					"data/rocket.png");
+			HomingRocket.rocketImg = ImageIO.read(homingRocketImgUrl);
+
 			// Explosion animation
 			URL explosionAnimImgUrl = this.getClass().getResource(
 					"data/explosion_anim.png");
@@ -196,11 +203,13 @@ public class Game {
 
 		Bullet.timeOfLastCreatedBullet = 0;
 		Rocket.timeOfLastCreatedRocket = 0;
+		HomingRocket.timeOfLastCreatedRocket = 0;
 
 		// Empty all lists
 		enemyHelicopterList.clear();
 		bulletList.clear();
 		rocketList.clear();
+		homingRocketList.clear();
 		rocketSmokeList.clear();
 		explosionList.clear();
 
@@ -232,7 +241,8 @@ public class Game {
 		// When player exhausts rockets and bullets and all lists (bullets,
 		// rockets, explosions) are empty, end the game
 		if (player.numberOfBullets <= 0 && player.numberOfRockets <= 0
-				&& bulletList.isEmpty() && rocketList.isEmpty()
+				&& player.numberOfHomingRockets <= 0 && bulletList.isEmpty()
+				&& rocketList.isEmpty() && homingRocketList.isEmpty()
 				&& rocketSmokeList.isEmpty() && explosionList.isEmpty()) {
 			Framework.gameState = Framework.GameState.GAMEOVER;
 			return; // If player is destroyed, no need to do anything below
@@ -242,6 +252,7 @@ public class Game {
 		if (isPlayerAlive()) {
 			isPlayerShooting(gameTime, mousePosition);
 			didPlayerFireRocket(gameTime);
+			didPlayerFireHomingRocket(gameTime);
 			player.setVelocity();
 			player.Update();
 		}
@@ -249,7 +260,7 @@ public class Game {
 		/**
 		 * Mouse
 		 */
-//		limitMousePosition(mousePosition);
+		// limitMousePosition(mousePosition);
 
 		/**
 		 * Bullets
@@ -261,6 +272,8 @@ public class Game {
 		 */
 		updateRockets(gameTime); // Also checks for collisions (hitting the
 									// enemy)
+		updateHomingRockets(gameTime); // Also checks for collisions (hitting
+										// the enemy)
 		updateRocketSmoke(gameTime);
 
 		/**
@@ -314,6 +327,11 @@ public class Game {
 			rocketList.get(i).Draw(g2d);
 		}
 
+		// Homing Rockets
+		for (int i = 0; i < homingRocketList.size(); i++) {
+			homingRocketList.get(i).Draw(g2d);
+		}
+
 		// Rocket smoke
 		for (int i = 0; i < rocketSmokeList.size(); i++) {
 			rocketSmokeList.get(i).Draw(g2d);
@@ -353,11 +371,17 @@ public class Game {
 		g2d.setColor(Color.WHITE);
 		g2d.drawString(tmpStr, 10, 121 - 2);
 
-		tmpStr = "AMMO: " + player.numberOfBullets;
+		tmpStr = "HOMING ROCKETS: " + player.numberOfHomingRockets;
 		g2d.setColor(Color.DARK_GRAY);
 		g2d.drawString(tmpStr, 10 + 2, 161);
 		g2d.setColor(Color.WHITE);
 		g2d.drawString(tmpStr, 10, 161 - 2);
+
+		tmpStr = "AMMO: " + player.numberOfBullets;
+		g2d.setColor(Color.DARK_GRAY);
+		g2d.drawString(tmpStr, 10 + 2, 201);
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(tmpStr, 10, 201 - 2);
 
 		// Moving images in front of helicopter
 		cloudLayer1Moving.Draw(g2d);
@@ -421,66 +445,72 @@ public class Game {
 	 */
 	private void drawRotatedMouseCursor(Graphics2D g2d, Point mousePosition) {
 		double RIGHT_ANGLE_RADIANS = Math.PI / 2;
-		
+
 		// Position of gun
 		int pivotX = player.gunXCoord;
 		int pivotY = player.gunYCoord;
-		
+
 		int a = pivotX - mousePosition.x;
 		int b = pivotY - mousePosition.y;
 		double ab = (double) a / (double) b;
 		double alfaAngleRadians = Math.atan(ab);
-		
+
 		if (mousePosition.y < pivotY) { // Above helicopter
-			alfaAngleRadians = RIGHT_ANGLE_RADIANS - alfaAngleRadians - (RIGHT_ANGLE_RADIANS * 2);
+			alfaAngleRadians = RIGHT_ANGLE_RADIANS - alfaAngleRadians
+					- (RIGHT_ANGLE_RADIANS * 2);
 		} else if (mousePosition.y > pivotY) { // Under helicopter
 			alfaAngleRadians = RIGHT_ANGLE_RADIANS - alfaAngleRadians;
 		} else {
 			alfaAngleRadians = 0;
 		}
-		
+
 		AffineTransform origXForm = g2d.getTransform();
 		AffineTransform newXForm = (AffineTransform) (origXForm.clone());
-		
+
 		newXForm.rotate(alfaAngleRadians, mousePosition.x, mousePosition.y);
 		g2d.setTransform(newXForm);
-		
-		g2d.drawImage(mouseCursorImg, mousePosition.x, mousePosition.y - mouseCursorImg.getHeight()/2, null);  // Subtract half of cursor image so it will be drawn in the center of the mouse's y-coord
+
+		g2d.drawImage(mouseCursorImg, mousePosition.x, mousePosition.y
+				- mouseCursorImg.getHeight() / 2, null); // Subtract half of
+															// cursor image so
+															// it will be drawn
+															// in the center of
+															// the mouse's
+															// y-coord
 
 		g2d.setTransform(origXForm);
 	}
-	
-	
+
 	/**
 	 * Format time to 00:00
 	 * 
-	 * @param time	Time (in nansecs)
+	 * @param time
+	 *            Time (in nansecs)
 	 * @return time in 0000 format
 	 */
 	private static String formatTime(long time) {
 		// Time (in secs)
 		int sec = (int) (time / Framework.millisecInNanosec / 1000);
-		
+
 		// Time (in mins and secs)
 		int min = sec / 60;
 		sec = sec - (min * 60);
-		
+
 		String minStr, secStr;
-		
+
 		minStr = Integer.toString(min);
 		if (min <= 9) {
 			minStr = "0" + minStr;
 		}
-		
+
 		secStr = Integer.toString(sec);
 		if (sec <= 9) {
 			secStr = "0" + secStr;
 		}
-		
+
 		return minStr + ":" + secStr;
 	}
-	
-	
+
 	/**
 	 * 
 	 * 
@@ -489,10 +519,9 @@ public class Game {
 	 * 
 	 * 
 	 */
-	
-	
+
 	/**
-	 * Check is player is alive.  If not, set GAME OVER
+	 * Check is player is alive. If not, set GAME OVER
 	 * 
 	 * @return true is player is alive, false otherwise
 	 */
@@ -503,22 +532,21 @@ public class Game {
 			return true;
 		}
 	}
-	
-	
+
 	/**
-	 * Checks if player is shooting and creates bullets 
+	 * Checks if player is shooting and creates bullets
 	 */
 	private void isPlayerShooting(long gameTime, Point mousePosition) {
 		if (player.isShooting(gameTime)) {
 			Bullet.timeOfLastCreatedBullet = gameTime;
 			player.numberOfBullets--;
-			
-			Bullet b = new Bullet(player.gunXCoord, player.gunYCoord, mousePosition);
+
+			Bullet b = new Bullet(player.gunXCoord, player.gunYCoord,
+					mousePosition);
 			bulletList.add(b);
 		}
 	}
-	
-	
+
 	/**
 	 * Checks if player is launching rockets and creates rockets
 	 */
@@ -526,14 +554,29 @@ public class Game {
 		if (player.isFiringRocket(gameTime)) {
 			Rocket.timeOfLastCreatedRocket = gameTime;
 			player.numberOfRockets--;
-			
+
 			Rocket r = new Rocket();
-			r.Initialize(player.rocketLauncherXCoord, player.rocketLauncherYCoord);
+			r.Initialize(player.rocketLauncherXCoord,
+					player.rocketLauncherYCoord);
 			rocketList.add(r);
 		}
 	}
-	
-	
+
+	/**
+	 * Checks if player is launching rockets and creates rockets
+	 */
+	private void didPlayerFireHomingRocket(long gameTime) {
+		if (player.isFiringHomingRocket(gameTime)) {
+			HomingRocket.timeOfLastCreatedRocket = gameTime;
+			player.numberOfHomingRockets--;
+
+			HomingRocket hr = new HomingRocket();
+			hr.Initialize(player.rocketLauncherXCoord,
+					player.rocketLauncherYCoord);
+			homingRocketList.add(hr);
+		}
+	}
+
 	/**
 	 * Creates new enemy if it's time
 	 */
@@ -541,76 +584,102 @@ public class Game {
 		if (gameTime - EnemyHelicopter.timeOfLastCreatedEnemy >= EnemyHelicopter.timeBetweenNewEnemies) {
 			EnemyHelicopter eh = new EnemyHelicopter();
 			int xCoord = Framework.frameWidth;
-			int yCoord = rand.nextInt(Framework.frameHeight - EnemyHelicopter.heliBodyImg.getHeight());
+			int yCoord = rand.nextInt(Framework.frameHeight
+					- EnemyHelicopter.heliBodyImg.getHeight());
 			eh.Initialize(xCoord, yCoord);
-			
+
 			// Add created enemy to list of enemies
 			enemyHelicopterList.add(eh);
-			
+
 			// Speed up enemy speed and creation
 			EnemyHelicopter.speedUp();
-			
+
 			// Set new time for last created enemy
 			EnemyHelicopter.timeOfLastCreatedEnemy = gameTime;
 		}
 	}
-	
-	
+
 	/**
-	 * Updates all enemies
-	 * <li>Moves helicopter and checks if it's offscreen
-	 * <li>Updates animations
-	 * <li>Checks if enemy was killed
-	 * <li>Checks if enemy collides with player
+	 * Updates all enemies <li>Moves helicopter and checks if it's offscreen <li>
+	 * Updates animations <li>Checks if enemy was killed <li>Checks if enemy
+	 * collides with player
 	 */
 	private void updateEnemies() {
 		for (int i = 0; i < enemyHelicopterList.size(); i++) {
 			EnemyHelicopter eh = enemyHelicopterList.get(i);
-			
+
 			eh.Update();
-			
+
 			// Collided with player?
-			Rectangle playerRectangle = new Rectangle(player.xCoord, player.yCoord, player.heliBodyImg.getWidth(), player.heliBodyImg.getHeight());
-			Rectangle enemyRectangle = new Rectangle(eh.xCoord, eh.yCoord, EnemyHelicopter.heliBodyImg.getWidth(), EnemyHelicopter.heliBodyImg.getHeight());
+			Rectangle playerRectangle = new Rectangle(player.xCoord,
+					player.yCoord, player.heliBodyImg.getWidth(),
+					player.heliBodyImg.getHeight());
+			Rectangle enemyRectangle = new Rectangle(eh.xCoord, eh.yCoord,
+					EnemyHelicopter.heliBodyImg.getWidth(),
+					EnemyHelicopter.heliBodyImg.getHeight());
 
 			if (playerRectangle.intersects(enemyRectangle)) {
 				player.health = 0;
-				
+
 				// Remove enemy helicopter
 				enemyHelicopterList.remove(i);
-				
+
 				// Player explosion
 				for (int j = 0; j < 3; j++) {
-					Animation expAnim = new Animation(explosionAnimImg, 134, 134, 12, 45, false, player.xCoord + i*60, player.yCoord - rand.nextInt(100), i * 200 + rand.nextInt(100));
+					Animation expAnim = new Animation(explosionAnimImg, 134,
+							134, 12, 45, false, player.xCoord + i * 60,
+							player.yCoord - rand.nextInt(100), i * 200
+									+ rand.nextInt(100));
 					explosionList.add(expAnim);
 				}
-				
+
 				// Enemy explosion
 				for (int j = 0; j < 3; j++) {
-					Animation expAnim = new Animation(explosionAnimImg, 134, 134, 12, 45, false, eh.xCoord + i*60, eh.yCoord - rand.nextInt(100), i * 200 + rand.nextInt(100));
+					Animation expAnim = new Animation(explosionAnimImg, 134,
+							134, 12, 45, false, eh.xCoord + i * 60, eh.yCoord
+									- rand.nextInt(100), i * 200
+									+ rand.nextInt(100));
 					explosionList.add(expAnim);
 				}
-				
+
 				// Since game over, we do not need to check other enemies
 				break;
 			}
-			
+
 			// Enemy health
 			if (eh.health <= 0) {
 				// Enemy explosion
-				Animation expAnim = new Animation(explosionAnimImg, 134, 134, 12, 45, false, eh.xCoord, eh.yCoord - explosionAnimImg.getHeight()/3, 0);  // Substring 1/3 of explosion image height so explosion is drawn closer to the center of the helicopter
+				Animation expAnim = new Animation(explosionAnimImg, 134, 134,
+						12, 45, false, eh.xCoord, eh.yCoord
+								- explosionAnimImg.getHeight() / 3, 0); // Substring
+																		// 1/3
+																		// of
+																		// explosion
+																		// image
+																		// height
+																		// so
+																		// explosion
+																		// is
+																		// drawn
+																		// closer
+																		// to
+																		// the
+																		// center
+																		// of
+																		// the
+																		// helicopter
 				explosionList.add(expAnim);
-				
+
 				// Increment enemy killed counter
 				enemiesKilled++;
-				
+
 				// Remove killed enemy from list
 				enemyHelicopterList.remove(i);
-				
+
 				// This enemy was killed so skip to the next enemy
 				continue;
 			}
-			
+
 			// Enemy offscreen
 			if (eh.hasLeftScreen()) {
 				enemyHelicopterList.remove(i);
@@ -618,94 +687,129 @@ public class Game {
 			}
 		}
 	}
-	
-	
+
 	/**
-	 * Update bullets
-	 * <li>Moves bullets
-	 * <li>Checks if bullets are offscreen
-	 * <li>Checks if bullets hit the enemy
+	 * Update bullets <li>Moves bullets <li>Checks if bullets are offscreen <li>
+	 * Checks if bullets hit the enemy
 	 */
 	private void updateBullets() {
 		for (int i = 0; i < bulletList.size(); i++) {
 			Bullet b = bulletList.get(i);
-			
+
 			// Move bullet
 			b.Update();
-			
+
 			// Bullet offscreen?
 			if (b.hasLeftScreen()) {
 				bulletList.remove(i);
 				// This bullet is offscreen so move onto the next bullet
 				continue;
 			}
-			
+
 			// Does the bullet hit?...
-			Rectangle bulletRectangle = new Rectangle((int) b.xCoord, (int) b.yCoord, Bullet.bulletImg.getWidth(), Bullet.bulletImg.getHeight());
+			Rectangle bulletRectangle = new Rectangle((int) b.xCoord,
+					(int) b.yCoord, Bullet.bulletImg.getWidth(),
+					Bullet.bulletImg.getHeight());
 			// ...any on-screen enemy?
 			for (int j = 0; j < enemyHelicopterList.size(); j++) {
 				EnemyHelicopter eh = enemyHelicopterList.get(j);
-				
+
 				// Current enemy
-				Rectangle enemeyRectangle = new Rectangle(eh.xCoord, eh.yCoord, EnemyHelicopter.heliBodyImg.getWidth(), EnemyHelicopter.heliBodyImg.getHeight());
-				
+				Rectangle enemeyRectangle = new Rectangle(eh.xCoord, eh.yCoord,
+						EnemyHelicopter.heliBodyImg.getWidth(),
+						EnemyHelicopter.heliBodyImg.getHeight());
+
 				// Is current bullet over current enemy?
 				if (bulletRectangle.intersects(enemeyRectangle)) {
 					// Reduce enemy health
 					eh.health -= Bullet.damagePower;
-					
+
 					// Bullet was also destroyed
 					bulletList.remove(i);
-					
+
 					// This bullet is done so skip to the next bullet
 					break;
 				}
 			}
 		}
 	}
-	
-	
+
 	/**
-	 * Update rockets
-	 * <li>Moves rocket and adds trailing smoke
-	 * <li>Checks if rockets are offscreen
-	 * <li>Checks if rocket hit the enemy
+	 * Update rockets <li>Moves rocket and adds trailing smoke <li>Checks if
+	 * rockets are offscreen <li>Checks if rocket hit the enemy
 	 * 
 	 * @param gameTime
 	 */
 	private void updateRockets(long gameTime) {
 		for (int i = 0; i < rocketList.size(); i++) {
 			Rocket r = rocketList.get(i);
-			
+
 			// Move rocket
 			r.Update();
-			
+
 			// Rocket offscreen?
 			if (r.hasLeftScreen()) {
 				rocketList.remove(i);
 				// This rocket is offscreen so move onto the next rocket
 				continue;
 			}
-			
+
 			// Create rocket smoke
 			RocketSmoke rs = new RocketSmoke();
-			int xCoord = r.xCoord - RocketSmoke.smokeImg.getWidth();  // Subtract size of rocket smoke image so smoke does not start in the middle of the rocket image
-			int yCoord = r.yCoord - 5 + rand.nextInt(6);  // Subtract 5 so smoke will be at the middle of the rocket on y-axis.  Randomly add number between 0 and 6 so smoke line isn't a straight line
+			int xCoord = r.xCoord - RocketSmoke.smokeImg.getWidth(); // Subtract
+																		// size
+																		// of
+																		// rocket
+																		// smoke
+																		// image
+																		// so
+																		// smoke
+																		// does
+																		// not
+																		// start
+																		// in
+																		// the
+																		// middle
+																		// of
+																		// the
+																		// rocket
+																		// image
+			int yCoord = r.yCoord - 5 + rand.nextInt(6); // Subtract 5 so smoke
+															// will be at the
+															// middle of the
+															// rocket on y-axis.
+															// Randomly add
+															// number between 0
+															// and 6 so smoke
+															// line isn't a
+															// straight line
 			rs.Initialize(xCoord, yCoord, gameTime, r.currentSmokeLifeTime);
 			rocketSmokeList.add(rs);
-			
-			// Because rocket is fast, we get empty space between smokes... so we add more smoke.
+
+			// Because rocket is fast, we get empty space between smokes... so
+			// we add more smoke.
 			// The fast the rocket's speed, the larger the empty space
-			int smokePositionX = 5 + rand.nextInt(8);  // Draw this smoke a little bit ahead of the one we drew before
+			int smokePositionX = 5 + rand.nextInt(8); // Draw this smoke a
+														// little bit ahead of
+														// the one we drew
+														// before
 			rs = new RocketSmoke();
-			xCoord = r.xCoord - RocketSmoke.smokeImg.getWidth() + smokePositionX; // Add so smoke will not be on same x-coord as previous smoke.  First, add 5 because a random numer between 0 and 8 could be 0 (which would mean it's on the same x-coord as previous).
-			yCoord = r.yCoord - 5 + rand.nextInt(6);  // Subtract 5 so smoke will be at middle of rocket on y-axis
+			xCoord = r.xCoord - RocketSmoke.smokeImg.getWidth()
+					+ smokePositionX; // Add so smoke will not be on same
+										// x-coord as previous smoke. First, add
+										// 5 because a random numer between 0
+										// and 8 could be 0 (which would mean
+										// it's on the same x-coord as
+										// previous).
+			yCoord = r.yCoord - 5 + rand.nextInt(6); // Subtract 5 so smoke will
+														// be at middle of
+														// rocket on y-axis
 			rs.Initialize(xCoord, yCoord, gameTime, r.currentSmokeLifeTime);
 			rocketSmokeList.add(rs);
-			
+
 			// Increate life time for next piece of rocket smoke
 			r.currentSmokeLifeTime *= 1.02;
-			
+
 			// Rocket hits enemy?
 			if (didRocketHitEnemy(r)) {
 				// Rocket was destroyed too so remove it
@@ -713,47 +817,189 @@ public class Game {
 			}
 		}
 	}
-	
-	
+
+	/**
+	 * Update rockets <li>Moves rocket and adds trailing smoke <li>Checks if
+	 * rockets are offscreen <li>Checks if rocket hit the enemy
+	 * 
+	 * @param gameTime
+	 */
+	private void updateHomingRockets(long gameTime) {
+		for (int i = 0; i < homingRocketList.size(); i++) {
+			HomingRocket hr = homingRocketList.get(i);
+
+			// Move homing rocket
+			hr.Update();
+
+			// Seek target
+			if (enemyHelicopterList.size() > 0) {
+				for (int j = 0; j < enemyHelicopterList.size(); j++) {
+					EnemyHelicopter eh = enemyHelicopterList.get(j);
+
+					// If rocket's nose is in front of the enemy helicopter's tail, then...
+					if (hr.xCoord + hr.rocketImg.getWidth() < eh.xCoord + eh.heliBodyImg.getWidth()) {
+						// ...seek the enemy helicopter
+						hr.Follow(eh);
+						break;
+					}
+				}
+			}
+
+			// Rocket offscreen?
+			if (hr.hasLeftScreen()) {
+				homingRocketList.remove(i);
+				// This rocket is offscreen so move onto the next rocket
+				continue;
+			}
+
+			// Create rocket smoke
+			RocketSmoke rs = new RocketSmoke();
+			int xCoord = hr.xCoord - RocketSmoke.smokeImg.getWidth(); // Subtract
+																		// size
+																		// of
+																		// rocket
+																		// smoke
+																		// image
+																		// so
+																		// smoke
+																		// does
+																		// not
+																		// start
+																		// in
+																		// the
+																		// middle
+																		// of
+																		// the
+																		// rocket
+																		// image
+			int yCoord = hr.yCoord - 5 + rand.nextInt(6); // Subtract 5 so smoke
+															// will be at the
+															// middle of the
+															// rocket on y-axis.
+															// Randomly add
+															// number between 0
+															// and 6 so smoke
+															// line isn't a
+															// straight line
+			rs.Initialize(xCoord, yCoord, gameTime, hr.currentSmokeLifeTime);
+			rocketSmokeList.add(rs);
+
+			// Because rocket is fast, we get empty space between smokes... so
+			// we add more smoke.
+			// The fast the rocket's speed, the larger the empty space
+			int smokePositionX = 5 + rand.nextInt(8); // Draw this smoke a
+														// little bit ahead of
+														// the one we drew
+														// before
+			rs = new RocketSmoke();
+			xCoord = hr.xCoord - RocketSmoke.smokeImg.getWidth()
+					+ smokePositionX; // Add so smoke will not be on same
+										// x-coord as previous smoke. First, add
+										// 5 because a random numer between 0
+										// and 8 could be 0 (which would mean
+										// it's on the same x-coord as
+										// previous).
+			yCoord = hr.yCoord - 5 + rand.nextInt(6); // Subtract 5 so smoke
+														// will be at middle of
+														// rocket on y-axis
+			rs.Initialize(xCoord, yCoord, gameTime, hr.currentSmokeLifeTime);
+			rocketSmokeList.add(rs);
+
+			// Increate life time for next piece of rocket smoke
+			hr.currentSmokeLifeTime *= 1.02;
+
+			// Rocket hits enemy?
+			if (didHomingRocketHitEnemy(hr)) {
+				// Rocket was destroyed too so remove it
+				homingRocketList.remove(i);
+			}
+		}
+	}
+
 	/**
 	 * Checks if the given rocket hit any enemy
 	 * 
-	 * @param rocket	Rocket to check
+	 * @param rocket
+	 *            Rocket to check
 	 * @return true if any enemy is hit, false otherwise
 	 */
 	private boolean didRocketHitEnemy(Rocket rocket) {
 		boolean didItHitEnemy = false;
-		
+
 		// Current rocket's rectangle
-		// Use "2" vice "rocketImg.getWidth()" so the rocket is over the helicopter to detect collision (since actual helicopter image is not a rectangle
-		Rectangle rocketRectangle = new Rectangle(rocket.xCoord, rocket.yCoord, 2, Rocket.rocketImg.getHeight());
-		
+		// Use "2" vice "rocketImg.getWidth()" so the rocket is over the
+		// helicopter to detect collision (since actual helicopter image is not
+		// a rectangle
+		Rectangle rocketRectangle = new Rectangle(rocket.xCoord, rocket.yCoord,
+				2, Rocket.rocketImg.getHeight());
+
 		// Loop through all enemies
 		for (int i = 0; i < enemyHelicopterList.size(); i++) {
 			EnemyHelicopter eh = enemyHelicopterList.get(i);
-			
+
 			// Current enemy rectangle
-			Rectangle enemyRectangle = new Rectangle(eh.xCoord, eh.yCoord, EnemyHelicopter.heliBodyImg.getWidth(), EnemyHelicopter.heliBodyImg.getHeight());
-			
+			Rectangle enemyRectangle = new Rectangle(eh.xCoord, eh.yCoord,
+					EnemyHelicopter.heliBodyImg.getWidth(),
+					EnemyHelicopter.heliBodyImg.getHeight());
+
 			// Is current rocket over current enemy?
 			if (rocketRectangle.intersects(enemyRectangle)) {
 				didItHitEnemy = true;
-				
+
 				// Rocket hit enemy so reduce enemy's health
 				eh.health -= Rocket.damagePower;
-				
+
 				// This rocket hit an enemy so skip to the next rocket
 				break;
 			}
 		}
-		
+
 		return didItHitEnemy;
 	}
-	
-	
+
 	/**
-	 * Update rocket smoke
-	 * <li>If smoke life time is over, delete it from list
+	 * Checks if the given rocket hit any enemy
+	 * 
+	 * @param rocket
+	 *            Rocket to check
+	 * @return true if any enemy is hit, false otherwise
+	 */
+	private boolean didHomingRocketHitEnemy(HomingRocket homingRocket) {
+		boolean didItHitEnemy = false;
+
+		// Current rocket's rectangle
+		// Use "2" vice "rocketImg.getWidth()" so the rocket is over the
+		// helicopter to detect collision (since actual helicopter image is not
+		// a rectangle
+		Rectangle rocketRectangle = new Rectangle(homingRocket.xCoord,
+				homingRocket.yCoord, 2, HomingRocket.rocketImg.getHeight());
+
+		// Loop through all enemies
+		for (int i = 0; i < enemyHelicopterList.size(); i++) {
+			EnemyHelicopter eh = enemyHelicopterList.get(i);
+
+			// Current enemy rectangle
+			Rectangle enemyRectangle = new Rectangle(eh.xCoord, eh.yCoord,
+					EnemyHelicopter.heliBodyImg.getWidth(),
+					EnemyHelicopter.heliBodyImg.getHeight());
+
+			// Is current rocket over current enemy?
+			if (rocketRectangle.intersects(enemyRectangle)) {
+				didItHitEnemy = true;
+
+				// Rocket hit enemy so reduce enemy's health
+				eh.health -= Rocket.damagePower;
+
+				// This rocket hit an enemy so skip to the next rocket
+				break;
+			}
+		}
+
+		return didItHitEnemy;
+	}
+
+	/**
+	 * Update rocket smoke <li>If smoke life time is over, delete it from list
 	 * <li>Also, change transparency so smoke slowly disappears
 	 * 
 	 * @param gameTime
@@ -761,18 +1007,17 @@ public class Game {
 	private void updateRocketSmoke(long gameTime) {
 		for (int i = 0; i < rocketSmokeList.size(); i++) {
 			RocketSmoke rs = rocketSmokeList.get(i);
-			
+
 			// Is it time to remove smoke?
 			if (rs.didSmokeDisappear(gameTime)) {
 				rocketSmokeList.remove(i);
 			}
-			
+
 			// Set new transparency of rocket smoke image
 			rs.updateTransparency(gameTime);
 		}
 	}
-	
-	
+
 	/**
 	 * Update explosion animation and remove animation when done
 	 */
@@ -784,8 +1029,7 @@ public class Game {
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * Limits distance of mouse from player
 	 * 
@@ -796,25 +1040,28 @@ public class Game {
 		int maxYCoordDistanceFromPlayerTop = 30;
 		// Max distance from player on y-axis below
 		int maxYCoordDistanceFromPlayerBottom = 120;
-		
+
 		// Mouse cursor will always be same distance from player on x-axis
 		int mouseXCoord = player.gunXCoord + 250;
-		
+
 		// Limit distance of mouse on y-axis
 		int mouseYCoord = mousePostion.y;
 		if (mousePostion.y < player.gunYCoord) { // Above helicopter guns
-			if (mousePostion.y < player.gunYCoord - maxYCoordDistanceFromPlayerTop) {
+			if (mousePostion.y < player.gunYCoord
+					- maxYCoordDistanceFromPlayerTop) {
 				mouseYCoord = player.gunYCoord - maxYCoordDistanceFromPlayerTop;
 			}
 		} else { // Under helicopter guns
-			if (mousePostion.y > player.gunYCoord + maxYCoordDistanceFromPlayerBottom) {
-				mouseYCoord = player.gunYCoord + maxYCoordDistanceFromPlayerBottom;
+			if (mousePostion.y > player.gunYCoord
+					+ maxYCoordDistanceFromPlayerBottom) {
+				mouseYCoord = player.gunYCoord
+						+ maxYCoordDistanceFromPlayerBottom;
 			}
 		}
-		
+
 		// Move mouse on y-axis with helicopter... makes shooting easier
 		mouseYCoord += player.movingYSpeed;
-		
+
 		// Move mouse
 		robot.mouseMove(mouseXCoord, mouseYCoord);
 	}

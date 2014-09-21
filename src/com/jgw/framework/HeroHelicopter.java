@@ -29,6 +29,10 @@ public class HeroHelicopter {
 	private final int numberOfRocketsInit = 80;
 	public int numberOfRockets;
 
+	// Homing Rockets
+	private final int numberOfHomingRocketsInit = 80;
+	public int numberOfHomingRockets;
+
 	// Bullets
 	private final int numberOfBulletsInit = 1400;
 	public int numberOfBullets;
@@ -79,6 +83,7 @@ public class HeroHelicopter {
 		this.health = healthInit;
 
 		this.numberOfRockets = numberOfRocketsInit;
+		this.numberOfHomingRockets = numberOfHomingRocketsInit;
 		this.numberOfBullets = numberOfBulletsInit;
 
 		this.movingXSpeed = 0;
@@ -143,6 +148,7 @@ public class HeroHelicopter {
 		this.health = healthInit;
 
 		this.numberOfRockets = numberOfRocketsInit;
+		this.numberOfHomingRockets = numberOfHomingRocketsInit;
 		this.numberOfBullets = numberOfBulletsInit;
 
 		this.xCoord = xCoord;
@@ -183,6 +189,21 @@ public class HeroHelicopter {
 	 */
 	public boolean isFiringRocket(long gameTime) {
 		if (Canvas.mouseButtonState(MouseEvent.BUTTON3) && ((gameTime - Rocket.timeOfLastCreatedRocket) >= Rocket.timeBetweenNewRockets && this.numberOfRockets > 0)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * Checks if player is launching a rocket; also checks if player can fire rocket (reload aka time between rockets and remaining rockets)
+	 * 
+	 * @param gameTime	Current elapsed time (in nanosecs)
+	 * @return true if shooting, false otherwise
+	 */
+	public boolean isFiringHomingRocket(long gameTime) {
+		if (Canvas.mouseButtonState(MouseEvent.BUTTON2) && ((gameTime - HomingRocket.timeOfLastCreatedRocket) >= HomingRocket.timeBetweenNewRockets && this.numberOfHomingRockets > 0)) {
 			return true;
 		} else {
 			return false;

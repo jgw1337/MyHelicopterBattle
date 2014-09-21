@@ -88,7 +88,11 @@ public class RocketSmoke {
 	 * @param g2d	Graphics2D
 	 */
 	public void Draw(Graphics2D g2d) {
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, imageTransparency));
+		try {
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, imageTransparency));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		
 		// While smoke is disappearing (imageTransparency), it is also expanding
 		float imageMultiplier = 2 - imageTransparency; // Multiply smoke image with imageMultiplier so it slowly becomes bigger
