@@ -99,11 +99,13 @@ public class HeroHelicopter {
 		this.stoppingXSpeed = 0.1;
 		this.stoppingYSpeed = 0.1;
 
+/*
 		this.offsetXFrontPropeller = 70;
 		this.offsetYFrontPropeller = -23;
 		this.offsetXRearPropeller = -6;
 		this.offsetYRearPropeller = -21;
-
+*/
+		
 		this.offsetXRocketLauncher = 138;
 		this.offsetYRocketLauncher = 40;
 		this.rocketLauncherXCoord = this.xCoord + this.offsetXRocketLauncher;
@@ -126,42 +128,70 @@ public class HeroHelicopter {
 				this.numberOfRockets = 0;
 				this.numberOfHomingRockets = 100;
 				this.numberOfBullets = 0;
+				this.offsetXFrontPropeller = 38;
+				this.offsetYFrontPropeller = -17;
+				this.offsetXRearPropeller = 3;
+				this.offsetYRearPropeller = -21;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_F) {
 				style = "frank";
 				heliStyleStr = "data/1_helicopter_body_frank.png";
 				this.numberOfRockets = 5;
 				this.numberOfHomingRockets = 5;
 				this.numberOfBullets = 2000;
+				this.offsetXFrontPropeller = 70;
+				this.offsetYFrontPropeller = -23;
+				this.offsetXRearPropeller = -10;
+				this.offsetYRearPropeller = -21;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_G) {
 				style = "glenn";
 				heliStyleStr = "data/1_helicopter_body_glenn.png";
 				this.numberOfRockets = 10;
 				this.numberOfHomingRockets = 25;
 				this.numberOfBullets = 100;
+				this.offsetXFrontPropeller = 70;
+				this.offsetYFrontPropeller = -23;
+				this.offsetXRearPropeller = -6;
+				this.offsetYRearPropeller = -21;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_J) {
 				style = "john";
 				heliStyleStr = "data/1_helicopter_body_john.png";
 				this.numberOfRockets = 15;
 				this.numberOfHomingRockets = 15;
 				this.numberOfBullets = 500;
+				this.offsetXFrontPropeller = 65;
+				this.offsetYFrontPropeller = -23;
+				this.offsetXRearPropeller = -6;
+				this.offsetYRearPropeller = -11;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_M) {
 				style = "marcus";
 				heliStyleStr = "data/1_helicopter_body_marcus.png";
 				this.numberOfRockets = 10;
 				this.numberOfHomingRockets = 5;
 				this.numberOfBullets = 1000;
+				this.offsetXFrontPropeller = 70;
+				this.offsetYFrontPropeller = -23;
+				this.offsetXRearPropeller = -6;
+				this.offsetYRearPropeller = -21;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_W) {
 				style = "wade";
 				heliStyleStr = "data/1_helicopter_body_wade.png";
 				this.numberOfRockets = 25;
 				this.numberOfHomingRockets = 10;
 				this.numberOfBullets = 100;
+				this.offsetXFrontPropeller = 70;
+				this.offsetYFrontPropeller = -23;
+				this.offsetXRearPropeller = -4;
+				this.offsetYRearPropeller = 34;
 			} else {
 				style = "default";
 				heliStyleStr = "data/1_helicopter_body.png";
 				this.numberOfRockets = numberOfRocketsInit;
 				this.numberOfHomingRockets = numberOfHomingRocketsInit;
 				this.numberOfBullets = numberOfBulletsInit;
+				this.offsetXFrontPropeller = 70;
+				this.offsetYFrontPropeller = -23;
+				this.offsetXRearPropeller = -6;
+				this.offsetYRearPropeller = -21;
 			}
 			URL heliBodyImgUrl = this.getClass().getResource(heliStyleStr);
 			heliBodyImg = ImageIO.read(heliBodyImgUrl);
