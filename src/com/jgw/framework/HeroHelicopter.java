@@ -84,7 +84,9 @@ public class HeroHelicopter {
 	 * Set vars and objs
 	 */
 	private void Initialize() {
+/*
 		this.health = healthInit;
+*/
 		
 /*
 		this.numberOfRockets = numberOfRocketsInit;
@@ -94,10 +96,12 @@ public class HeroHelicopter {
 
 		this.movingXSpeed = 0;
 		this.movingYSpeed = 0;
+/*
 		this.acceleratingXSpeed = 0.2;
 		this.acceleratingYSpeed = 0.2;
 		this.stoppingXSpeed = 0.1;
 		this.stoppingYSpeed = 0.1;
+*/
 
 /*
 		this.offsetXFrontPropeller = 70;
@@ -125,16 +129,22 @@ public class HeroHelicopter {
 			if (heliStyle.getKeyCode() == KeyEvent.VK_E) {
 				style = "esther";
 				heliStyleStr = "data/1_helicopter_body_esther.png";
+				this.health = healthInit;
 				this.numberOfRockets = 0;
 				this.numberOfHomingRockets = 100;
-				this.numberOfBullets = 0;
+				this.numberOfBullets = 1000;
 				this.offsetXFrontPropeller = 38;
 				this.offsetYFrontPropeller = -17;
 				this.offsetXRearPropeller = 3;
 				this.offsetYRearPropeller = -21;
+				this.acceleratingXSpeed = 0.4;
+				this.acceleratingYSpeed = 0.4;
+				this.stoppingXSpeed = 0.4;
+				this.stoppingYSpeed = 0.4;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_F) {
 				style = "frank";
 				heliStyleStr = "data/1_helicopter_body_frank.png";
+				this.health = 50;
 				this.numberOfRockets = 5;
 				this.numberOfHomingRockets = 5;
 				this.numberOfBullets = 2000;
@@ -142,9 +152,14 @@ public class HeroHelicopter {
 				this.offsetYFrontPropeller = -23;
 				this.offsetXRearPropeller = -10;
 				this.offsetYRearPropeller = -21;
+				this.acceleratingXSpeed = 0.2;
+				this.acceleratingYSpeed = 0.2;
+				this.stoppingXSpeed = 0.1;
+				this.stoppingYSpeed = 0.1;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_G) {
 				style = "glenn";
 				heliStyleStr = "data/1_helicopter_body_glenn.png";
+				this.health = 50;
 				this.numberOfRockets = 10;
 				this.numberOfHomingRockets = 25;
 				this.numberOfBullets = 100;
@@ -152,9 +167,14 @@ public class HeroHelicopter {
 				this.offsetYFrontPropeller = -23;
 				this.offsetXRearPropeller = -6;
 				this.offsetYRearPropeller = -21;
+				this.acceleratingXSpeed = 0.2;
+				this.acceleratingYSpeed = 0.2;
+				this.stoppingXSpeed = 0.1;
+				this.stoppingYSpeed = 0.1;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_J) {
 				style = "john";
 				heliStyleStr = "data/1_helicopter_body_john.png";
+				this.health = healthInit;
 				this.numberOfRockets = 15;
 				this.numberOfHomingRockets = 15;
 				this.numberOfBullets = 500;
@@ -162,9 +182,14 @@ public class HeroHelicopter {
 				this.offsetYFrontPropeller = -23;
 				this.offsetXRearPropeller = -6;
 				this.offsetYRearPropeller = -11;
+				this.acceleratingXSpeed = 0.2;
+				this.acceleratingYSpeed = 0.2;
+				this.stoppingXSpeed = 0.1;
+				this.stoppingYSpeed = 0.1;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_M) {
 				style = "marcus";
 				heliStyleStr = "data/1_helicopter_body_marcus.png";
+				this.health = 150;
 				this.numberOfRockets = 10;
 				this.numberOfHomingRockets = 5;
 				this.numberOfBullets = 1000;
@@ -172,9 +197,14 @@ public class HeroHelicopter {
 				this.offsetYFrontPropeller = -23;
 				this.offsetXRearPropeller = -6;
 				this.offsetYRearPropeller = -21;
+				this.acceleratingXSpeed = 0.2;
+				this.acceleratingYSpeed = 0.2;
+				this.stoppingXSpeed = 0.1;
+				this.stoppingYSpeed = 0.1;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_W) {
 				style = "wade";
 				heliStyleStr = "data/1_helicopter_body_wade.png";
+				this.health = 250;
 				this.numberOfRockets = 25;
 				this.numberOfHomingRockets = 10;
 				this.numberOfBullets = 100;
@@ -182,9 +212,14 @@ public class HeroHelicopter {
 				this.offsetYFrontPropeller = -23;
 				this.offsetXRearPropeller = -4;
 				this.offsetYRearPropeller = 34;
+				this.acceleratingXSpeed = 0.2;
+				this.acceleratingYSpeed = 0.2;
+				this.stoppingXSpeed = 0.1;
+				this.stoppingYSpeed = 0.1;
 			} else {
 				style = "default";
 				heliStyleStr = "data/1_helicopter_body.png";
+				this.health = healthInit;
 				this.numberOfRockets = numberOfRocketsInit;
 				this.numberOfHomingRockets = numberOfHomingRocketsInit;
 				this.numberOfBullets = numberOfBulletsInit;
@@ -192,6 +227,10 @@ public class HeroHelicopter {
 				this.offsetYFrontPropeller = -23;
 				this.offsetXRearPropeller = -6;
 				this.offsetYRearPropeller = -21;
+				this.acceleratingXSpeed = 0.2;
+				this.acceleratingYSpeed = 0.2;
+				this.stoppingXSpeed = 0.1;
+				this.stoppingYSpeed = 0.1;
 			}
 			URL heliBodyImgUrl = this.getClass().getResource(heliStyleStr);
 			heliBodyImg = ImageIO.read(heliBodyImgUrl);
