@@ -13,8 +13,9 @@ import javax.imageio.ImageIO;
 
 public class HeroHelicopter {
 	// Health
-	private final int healthInit = 100;
+	private int healthInit;
 	public int health;
+	public int heliPlayerHealthPercent;
 
 	// Position
 	public int xCoord, yCoord;
@@ -38,7 +39,8 @@ public class HeroHelicopter {
 	public int numberOfBullets;
 
 	// Images
-	public BufferedImage heliBodyImg;
+	public BufferedImage heliBodyImg, heliProfileImg;
+	public BufferedImage heliProfileImg75, heliProfileImg50;
 	private BufferedImage heliFrontPropellerAnimImg, heliRearPropellerAnimImg;
 
 	// Propeller animation
@@ -61,7 +63,8 @@ public class HeroHelicopter {
 	public int gunXCoord, gunYCoord;
 
 	// Helicopter style
-	private String heliStyleStr;
+	private String heliStyleStr, heliPlayerStr;
+	private String heliPlayerHealth75Str, heliPlayerHealth50Str;
 	public String style;
 
 	/**
@@ -129,6 +132,8 @@ public class HeroHelicopter {
 			if (heliStyle.getKeyCode() == KeyEvent.VK_E) {
 				style = "esther";
 				heliStyleStr = "data/1_helicopter_body_esther.png";
+				heliPlayerStr = "data/profile_e.jpg";
+				this.healthInit = 100;
 				this.health = healthInit;
 				this.numberOfRockets = 0;
 				this.numberOfHomingRockets = 100;
@@ -144,7 +149,9 @@ public class HeroHelicopter {
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_F) {
 				style = "frank";
 				heliStyleStr = "data/1_helicopter_body_frank.png";
-				this.health = 50;
+				heliPlayerStr = "data/profile_f.jpg";
+				this.healthInit = 50;
+				this.health = healthInit;
 				this.numberOfRockets = 5;
 				this.numberOfHomingRockets = 5;
 				this.numberOfBullets = 2000;
@@ -159,7 +166,9 @@ public class HeroHelicopter {
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_G) {
 				style = "glenn";
 				heliStyleStr = "data/1_helicopter_body_glenn.png";
-				this.health = 50;
+				heliPlayerStr = "data/profile_g.jpg";
+				this.healthInit = 50;
+				this.health = healthInit;
 				this.numberOfRockets = 10;
 				this.numberOfHomingRockets = 25;
 				this.numberOfBullets = 100;
@@ -174,6 +183,8 @@ public class HeroHelicopter {
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_J) {
 				style = "john";
 				heliStyleStr = "data/1_helicopter_body_john.png";
+				heliPlayerStr = "data/profile_j.jpg";
+				this.healthInit = 100;
 				this.health = healthInit;
 				this.numberOfRockets = 15;
 				this.numberOfHomingRockets = 15;
@@ -189,7 +200,9 @@ public class HeroHelicopter {
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_M) {
 				style = "marcus";
 				heliStyleStr = "data/1_helicopter_body_marcus.png";
-				this.health = 150;
+				heliPlayerStr = "data/profile_m.jpg";
+				this.healthInit = 150;
+				this.health = healthInit;
 				this.numberOfRockets = 10;
 				this.numberOfHomingRockets = 5;
 				this.numberOfBullets = 1000;
@@ -204,7 +217,9 @@ public class HeroHelicopter {
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_W) {
 				style = "wade";
 				heliStyleStr = "data/1_helicopter_body_wade.png";
-				this.health = 250;
+				heliPlayerStr = "data/profile_w.jpg";
+				this.healthInit = 250;
+				this.health = healthInit;
 				this.numberOfRockets = 25;
 				this.numberOfHomingRockets = 10;
 				this.numberOfBullets = 100;
@@ -219,6 +234,8 @@ public class HeroHelicopter {
 			} else {
 				style = "default";
 				heliStyleStr = "data/1_helicopter_body.png";
+				heliPlayerStr = "data/profile_j.jpg";
+				this.healthInit = 100;
 				this.health = healthInit;
 				this.numberOfRockets = numberOfRocketsInit;
 				this.numberOfHomingRockets = numberOfHomingRocketsInit;
@@ -232,6 +249,17 @@ public class HeroHelicopter {
 				this.stoppingXSpeed = 0.1;
 				this.stoppingYSpeed = 0.1;
 			}
+			URL heliProfileImgUrl = this.getClass().getResource(heliPlayerStr);
+			heliProfileImg = ImageIO.read(heliProfileImgUrl);
+
+			heliPlayerHealth75Str = "data/profile_health75.png";
+			URL heliProfileImgUrl75 = this.getClass().getResource(heliPlayerHealth75Str);
+			heliProfileImg75 = ImageIO.read(heliProfileImgUrl75);
+
+			heliPlayerHealth50Str = "data/profile_health50.png";
+			URL heliProfileImgUrl50 = this.getClass().getResource(heliPlayerHealth50Str);
+			heliProfileImg50 = ImageIO.read(heliProfileImgUrl50);
+
 			URL heliBodyImgUrl = this.getClass().getResource(heliStyleStr);
 			heliBodyImg = ImageIO.read(heliBodyImgUrl);
 
@@ -428,5 +456,16 @@ public class HeroHelicopter {
 		g2d.drawImage(heliBodyImg, xCoord, yCoord, null);
 	}
 	
+	public void DrawAvatar(Graphics2D g2d) {
+		heliPlayerHealthPercent = ( health / healthInit ) * 100;
+		g2d.drawImage(heliProfileImg, 10, 17, null);
+		if (heliPlayerHealthPercent <= 50) {
+			g2d.drawImage(heliProfileImg50, 10, 17, null);
+			g2d.drawString("less than 50", 40, 41 - 2);
+		} else if (heliPlayerHealthPercent <= 75) {
+			g2d.drawImage(heliProfileImg75, 10, 17, null);
+			g2d.drawString("less than 75", 40, 41 - 2);
+		}
+	}
 	
 }

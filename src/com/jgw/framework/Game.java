@@ -73,6 +73,7 @@ public class Game {
 
 	// Temporary String (placeholder)
 	private String tmpStr;
+	private int statXCoord;
 
 	public Game(final KeyEvent heliStyle) {
 		Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
@@ -313,6 +314,8 @@ public class Game {
 		// Player
 		if (isPlayerAlive()) {
 			player.Draw(g2d);
+			player.DrawAvatar(g2d);
+			statXCoord = 10 + player.heliProfileImg.getWidth() + 10;
 		}
 
 		// Enemies
@@ -358,39 +361,39 @@ public class Game {
 
 		tmpStr = "HEALTH: " + player.health;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 40);
+		g2d.drawString(tmpStr, statXCoord + 2, 40);
 		g2d.setColor(Color.GREEN);
-		g2d.drawString(tmpStr, 10, 40 - 2);
+		g2d.drawString(tmpStr, statXCoord, 40 - 2);
 
 		tmpStr = "DESTROYED: " + enemiesKilled;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 80);
+		g2d.drawString(tmpStr, statXCoord + 2, 80);
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, 10, 80 - 2);
+		g2d.drawString(tmpStr, statXCoord, 80 - 2);
 
 		tmpStr = "RANAWAY: " + enemiesRanaway;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 120);
+		g2d.drawString(tmpStr, statXCoord + 2, 120);
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, 10, 120 - 2);
+		g2d.drawString(tmpStr, statXCoord, 120 - 2);
 
 		tmpStr = "ROCKETS: " + player.numberOfRockets;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 160);
+		g2d.drawString(tmpStr, statXCoord + 2, 160);
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, 10, 160 - 2);
+		g2d.drawString(tmpStr, statXCoord, 160 - 2);
 
 		tmpStr = "HOMING ROCKETS: " + player.numberOfHomingRockets;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 200);
+		g2d.drawString(tmpStr, statXCoord + 2, 200);
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, 10, 200 - 2);
+		g2d.drawString(tmpStr, statXCoord, 200 - 2);
 
 		tmpStr = "AMMO: " + player.numberOfBullets;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 240);
+		g2d.drawString(tmpStr, statXCoord + 2, 240);
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, 10, 240 - 2);
+		g2d.drawString(tmpStr, statXCoord, 240 - 2);
 
 		// Moving images in front of helicopter
 		cloudLayer1Moving.Draw(g2d);
