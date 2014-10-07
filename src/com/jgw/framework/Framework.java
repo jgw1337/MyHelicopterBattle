@@ -211,33 +211,55 @@ public class Framework extends Canvas {
 			g2d.setFont(font);
 			g2d.setColor(Color.BLACK);
 			tmpStr = "Press ENTER to restart or ESC to exit";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/4 + 30);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 4 + 30);
 			game.DrawStatistics(g2d, gameTime);
 			tmpStr = "GAME OVER";
 			g2d.setColor(Color.BLACK);
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2) + 2, frameHeight/4);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2) + 2,
+					frameHeight / 4);
 			g2d.setColor(Color.WHITE);
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/4 - 2);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 4 - 2);
 			break;
 		case MAIN_MENU:
 			drawMenuBackground(g2d);
-			g2d.drawImage(gameTitleImg, frameWidth/2 - gameTitleImg.getWidth()/2, frameHeight/4, null);
+			g2d.drawImage(gameTitleImg,
+					frameWidth / 2 - gameTitleImg.getWidth() / 2,
+					frameHeight / 4, null);
 			g2d.setFont(font);
 			g2d.setColor(Color.BLACK);
 			tmpStr = "Use w-a-s-d or arrow keys to move the helicopter.";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 - 60);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 2 - 60);
 			tmpStr = "Use left mouse button to fire bullets.";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 - 20);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 2 - 20);
 			tmpStr = "Use right mouse button to fire rockets.";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 20);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 2 + 20);
 			tmpStr = "Press any key to start the game or ESC to exit.";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 100);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 2 + 100);
 			tmpStr = "Select a character...";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 180);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 2 + 180);
 			tmpStr = "[E]stair, [F]rakor, [G]lear,";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 220);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 2 + 220);
 			tmpStr = "[J]ohr, [M]ark I, [W]aadger, or any other key.";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 260);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 2 + 260);
 			break;
 		case OPTIONS:
 
@@ -245,7 +267,9 @@ public class Framework extends Canvas {
 		case GAME_CONTENT_LOADING:
 			g2d.setColor(Color.WHITE);
 			tmpStr = "GAME is LOADING";
-			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2);
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 2);
 			break;
 		}
 	}
@@ -309,7 +333,7 @@ public class Framework extends Canvas {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			System.exit(0);
 		}
-		
+
 		switch (gameState) {
 		case GAMEOVER:
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -330,13 +354,16 @@ public class Framework extends Canvas {
 		// TODO Auto-generated method stub
 
 	}
-	
-	
+
 	private void drawMenuBackground(Graphics2D g2d) {
-		g2d.drawImage(skyColorImg, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
-		g2d.drawImage(cloudLayer1Img, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
-		g2d.drawImage(cloudLayer2Img, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
-		g2d.drawImage(menuBorderImg, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
+		g2d.drawImage(skyColorImg, 0, 0, Framework.frameWidth,
+				Framework.frameHeight, null);
+		g2d.drawImage(cloudLayer1Img, 0, 0, Framework.frameWidth,
+				Framework.frameHeight, null);
+		g2d.drawImage(cloudLayer2Img, 0, 0, Framework.frameWidth,
+				Framework.frameHeight, null);
+		g2d.drawImage(menuBorderImg, 0, 0, Framework.frameWidth,
+				Framework.frameHeight, null);
 		g2d.setColor(Color.WHITE);
 		tmpStr = "-jgw-";
 		g2d.drawString(tmpStr, 7, frameHeight - 5);

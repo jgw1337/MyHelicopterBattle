@@ -15,7 +15,7 @@ public class HeroHelicopter {
 	// Health
 	private int healthInit;
 	public int health;
-	public double healthPercent;
+	public float healthPercent;
 
 	// Position
 	public int xCoord, yCoord;
@@ -87,32 +87,28 @@ public class HeroHelicopter {
 	 * Set vars and objs
 	 */
 	private void Initialize() {
-/*
-		this.health = healthInit;
-*/
-		
-/*
-		this.numberOfRockets = numberOfRocketsInit;
-		this.numberOfHomingRockets = numberOfHomingRocketsInit;
-		this.numberOfBullets = numberOfBulletsInit;
-*/
+		/*
+		 * this.health = healthInit;
+		 */
+
+		/*
+		 * this.numberOfRockets = numberOfRocketsInit;
+		 * this.numberOfHomingRockets = numberOfHomingRocketsInit;
+		 * this.numberOfBullets = numberOfBulletsInit;
+		 */
 
 		this.movingXSpeed = 0;
 		this.movingYSpeed = 0;
-/*
-		this.acceleratingXSpeed = 0.2;
-		this.acceleratingYSpeed = 0.2;
-		this.stoppingXSpeed = 0.1;
-		this.stoppingYSpeed = 0.1;
-*/
+		/*
+		 * this.acceleratingXSpeed = 0.2; this.acceleratingYSpeed = 0.2;
+		 * this.stoppingXSpeed = 0.1; this.stoppingYSpeed = 0.1;
+		 */
 
-/*
-		this.offsetXFrontPropeller = 70;
-		this.offsetYFrontPropeller = -23;
-		this.offsetXRearPropeller = -6;
-		this.offsetYRearPropeller = -21;
-*/
-		
+		/*
+		 * this.offsetXFrontPropeller = 70; this.offsetYFrontPropeller = -23;
+		 * this.offsetXRearPropeller = -6; this.offsetYRearPropeller = -21;
+		 */
+
 		this.offsetXRocketLauncher = 138;
 		this.offsetYRocketLauncher = 40;
 		this.rocketLauncherXCoord = this.xCoord + this.offsetXRocketLauncher;
@@ -253,11 +249,13 @@ public class HeroHelicopter {
 			heliProfileImg = ImageIO.read(heliProfileImgUrl);
 
 			heliPlayerHealth75Str = "data/profile_health75.png";
-			URL heliProfileImgUrl75 = this.getClass().getResource(heliPlayerHealth75Str);
+			URL heliProfileImgUrl75 = this.getClass().getResource(
+					heliPlayerHealth75Str);
 			heliProfileImg75 = ImageIO.read(heliProfileImgUrl75);
 
 			heliPlayerHealth50Str = "data/profile_health50.png";
-			URL heliProfileImgUrl50 = this.getClass().getResource(heliPlayerHealth50Str);
+			URL heliProfileImgUrl50 = this.getClass().getResource(
+					heliPlayerHealth50Str);
 			heliProfileImg50 = ImageIO.read(heliProfileImgUrl50);
 
 			URL heliBodyImgUrl = this.getClass().getResource(heliStyleStr);
@@ -455,19 +453,23 @@ public class HeroHelicopter {
 		heliRearPropellerAnim.Draw(g2d);
 		g2d.drawImage(heliBodyImg, xCoord, yCoord, null);
 	}
-	
+
 	public void DrawAvatar(Graphics2D g2d) {
-		g2d.drawString("health: " + Integer.toString(health), Framework.frameWidth/2, Framework.frameHeight/2-100);
-		g2d.drawString("healthInit: " + Double.toString(healthInit), Framework.frameWidth/2, Framework.frameHeight/2-50);
-		healthPercent = ( this.health / this.healthInit ) * 100;
+		g2d.drawString("health: " + Integer.toString(health),
+				Framework.frameWidth / 2, Framework.frameHeight / 2 - 100);
+		g2d.drawString("healthInit: " + Integer.toString(healthInit),
+				Framework.frameWidth / 2, Framework.frameHeight / 2 - 50);
+		healthPercent = (health * 100.0f) / healthInit;
 		g2d.drawImage(heliProfileImg, 10, 17, null);
 		if (healthPercent <= 50) {
 			g2d.drawImage(heliProfileImg50, 10, 17, null);
-			g2d.drawString("less than 50: " + Double.toString(healthPercent), Framework.frameWidth/2, Framework.frameHeight/2);
+			g2d.drawString("less than 50: " + Float.toString(healthPercent),
+					Framework.frameWidth / 2, Framework.frameHeight / 2);
 		} else if (healthPercent <= 75) {
 			g2d.drawImage(heliProfileImg75, 10, 17, null);
-			g2d.drawString("less than 75: " + Double.toString(healthPercent), Framework.frameWidth/2, Framework.frameHeight/2);
+			g2d.drawString("less than 75: " + Float.toString(healthPercent),
+					Framework.frameWidth / 2, Framework.frameHeight / 2);
 		}
 	}
-	
+
 }
