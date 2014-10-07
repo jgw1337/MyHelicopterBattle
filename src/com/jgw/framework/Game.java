@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -72,15 +73,16 @@ public class Game {
 
 	// Temporary String (placeholder)
 	private String tmpStr;
+	private int statXCoord;
 
-	public Game() {
+	public Game(final KeyEvent heliStyle) {
 		Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
 
 		Thread threadForInitGame = new Thread() {
 			@Override
 			public void run() {
 				// Sets variables and objects for game
-				Initialize();
+				Initialize(heliStyle);
 				// Load game files (images, sounds, etc.)
 				LoadContent();
 
@@ -91,7 +93,7 @@ public class Game {
 	}
 
 	// Sets variables and objects for game
-	private void Initialize() {
+	private void Initialize(KeyEvent heliStyle) {
 		rand = new Random();
 
 		try {
@@ -101,7 +103,7 @@ public class Game {
 		}
 
 		player = new HeroHelicopter(Framework.frameWidth / 4,
-				Framework.frameHeight / 4);
+				Framework.frameHeight / 4, heliStyle);
 
 		enemyHelicopterList = new ArrayList<EnemyHelicopter>();
 
@@ -260,7 +262,9 @@ public class Game {
 		/**
 		 * Mouse
 		 */
-		// limitMousePosition(mousePosition);
+		if (player.style == "frank" || player.style == "marcus") {
+			limitMousePosition(mousePosition);
+		}
 
 		/**
 		 * Bullets
@@ -270,10 +274,10 @@ public class Game {
 		/**
 		 * Rockets
 		 */
-		updateRockets(gameTime); // Also checks for collisions (hitting the
-									// enemy)
-		updateHomingRockets(gameTime); // Also checks for collisions (hitting
-										// the enemy)
+		// Also checks for collisions (hitting the enemy)
+		updateRockets(gameTime);
+		// Also checks for collisions (hitting the enemy)
+		updateHomingRockets(gameTime);
 		updateRocketSmoke(gameTime);
 
 		/**
@@ -310,6 +314,8 @@ public class Game {
 		// Player
 		if (isPlayerAlive()) {
 			player.Draw(g2d);
+			player.DrawAvatar(g2d);
+			statXCoord = 10 + player.heliProfileImg.getWidth() + 10;
 		}
 
 		// Enemies
@@ -353,35 +359,41 @@ public class Game {
 		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
 				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2), 41 - 2);
 
+		tmpStr = "HEALTH: " + player.health;
+		g2d.setColor(Color.DARK_GRAY);
+		g2d.drawString(tmpStr, statXCoord + 2, 40);
+		g2d.setColor(Color.GREEN);
+		g2d.drawString(tmpStr, statXCoord, 40 - 2);
+
 		tmpStr = "DESTROYED: " + enemiesKilled;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 41);
+		g2d.drawString(tmpStr, statXCoord + 2, 80);
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, 10, 41 - 2);
+		g2d.drawString(tmpStr, statXCoord, 80 - 2);
 
 		tmpStr = "RANAWAY: " + enemiesRanaway;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 81);
+		g2d.drawString(tmpStr, statXCoord + 2, 120);
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, 10, 81 - 2);
+		g2d.drawString(tmpStr, statXCoord, 120 - 2);
 
 		tmpStr = "ROCKETS: " + player.numberOfRockets;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 121);
+		g2d.drawString(tmpStr, statXCoord + 2, 160);
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, 10, 121 - 2);
+		g2d.drawString(tmpStr, statXCoord, 160 - 2);
 
 		tmpStr = "HOMING ROCKETS: " + player.numberOfHomingRockets;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 161);
+		g2d.drawString(tmpStr, statXCoord + 2, 200);
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, 10, 161 - 2);
+		g2d.drawString(tmpStr, statXCoord, 200 - 2);
 
 		tmpStr = "AMMO: " + player.numberOfBullets;
 		g2d.setColor(Color.DARK_GRAY);
-		g2d.drawString(tmpStr, 10 + 2, 201);
+		g2d.drawString(tmpStr, statXCoord + 2, 240);
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, 10, 201 - 2);
+		g2d.drawString(tmpStr, statXCoord, 240 - 2);
 
 		// Moving images in front of helicopter
 		cloudLayer1Moving.Draw(g2d);
@@ -470,13 +482,10 @@ public class Game {
 		newXForm.rotate(alfaAngleRadians, mousePosition.x, mousePosition.y);
 		g2d.setTransform(newXForm);
 
+		// Subtract half of cursor image so it will be drawn in the center of
+		// the mouse's y-coord
 		g2d.drawImage(mouseCursorImg, mousePosition.x, mousePosition.y
-				- mouseCursorImg.getHeight() / 2, null); // Subtract half of
-															// cursor image so
-															// it will be drawn
-															// in the center of
-															// the mouse's
-															// y-coord
+				- mouseCursorImg.getHeight() / 2, null);
 
 		g2d.setTransform(origXForm);
 	}
@@ -619,7 +628,7 @@ public class Game {
 					EnemyHelicopter.heliBodyImg.getHeight());
 
 			if (playerRectangle.intersects(enemyRectangle)) {
-				player.health = 0;
+				player.health -= 50;
 
 				// Remove enemy helicopter
 				enemyHelicopterList.remove(i);
@@ -643,31 +652,17 @@ public class Game {
 				}
 
 				// Since game over, we do not need to check other enemies
-				break;
+				// break;
 			}
 
 			// Enemy health
 			if (eh.health <= 0) {
 				// Enemy explosion
+				// Substring 1/3 of explosion image height so explosion is drawn
+				// closer to the center of the helicopter
 				Animation expAnim = new Animation(explosionAnimImg, 134, 134,
 						12, 45, false, eh.xCoord, eh.yCoord
-								- explosionAnimImg.getHeight() / 3, 0); // Substring
-																		// 1/3
-																		// of
-																		// explosion
-																		// image
-																		// height
-																		// so
-																		// explosion
-																		// is
-																		// drawn
-																		// closer
-																		// to
-																		// the
-																		// center
-																		// of
-																		// the
-																		// helicopter
+								- explosionAnimImg.getHeight() / 3, 0);
 				explosionList.add(expAnim);
 
 				// Increment enemy killed counter
@@ -756,54 +751,29 @@ public class Game {
 
 			// Create rocket smoke
 			RocketSmoke rs = new RocketSmoke();
-			int xCoord = r.xCoord - RocketSmoke.smokeImg.getWidth(); // Subtract
-																		// size
-																		// of
-																		// rocket
-																		// smoke
-																		// image
-																		// so
-																		// smoke
-																		// does
-																		// not
-																		// start
-																		// in
-																		// the
-																		// middle
-																		// of
-																		// the
-																		// rocket
-																		// image
-			int yCoord = r.yCoord - 5 + rand.nextInt(6); // Subtract 5 so smoke
-															// will be at the
-															// middle of the
-															// rocket on y-axis.
-															// Randomly add
-															// number between 0
-															// and 6 so smoke
-															// line isn't a
-															// straight line
+			// Subtract size of rocket smoke image so smoke does not start in
+			// the middle of the rocket image
+			int xCoord = r.xCoord - RocketSmoke.smokeImg.getWidth();
+			// Subtract 5 so smoke will be at the middle of the rocket on
+			// y-axis. Randomly add number between 0 and 6 so smoke line isn't a
+			// straight line
+			int yCoord = r.yCoord - 5 + rand.nextInt(6);
 			rs.Initialize(xCoord, yCoord, gameTime, r.currentSmokeLifeTime);
 			rocketSmokeList.add(rs);
 
 			// Because rocket is fast, we get empty space between smokes... so
 			// we add more smoke.
 			// The fast the rocket's speed, the larger the empty space
-			int smokePositionX = 5 + rand.nextInt(8); // Draw this smoke a
-														// little bit ahead of
-														// the one we drew
-														// before
+			// Draw this smoke a little bit ahead of the one we drew before
+			int smokePositionX = 5 + rand.nextInt(8);
 			rs = new RocketSmoke();
+			// Add so smoke will not be on same x-coord as previous smoke.
+			// First, add 5 because a random numer between 0 and 8 could be 0
+			// (which would mean it's on the same x-coord as previous).
 			xCoord = r.xCoord - RocketSmoke.smokeImg.getWidth()
-					+ smokePositionX; // Add so smoke will not be on same
-										// x-coord as previous smoke. First, add
-										// 5 because a random numer between 0
-										// and 8 could be 0 (which would mean
-										// it's on the same x-coord as
-										// previous).
-			yCoord = r.yCoord - 5 + rand.nextInt(6); // Subtract 5 so smoke will
-														// be at middle of
-														// rocket on y-axis
+					+ smokePositionX;
+			// Subtract 5 so smoke will be at middle of rocket on y-axis
+			yCoord = r.yCoord - 5 + rand.nextInt(6);
 			rs.Initialize(xCoord, yCoord, gameTime, r.currentSmokeLifeTime);
 			rocketSmokeList.add(rs);
 
@@ -836,8 +806,10 @@ public class Game {
 				for (int j = 0; j < enemyHelicopterList.size(); j++) {
 					EnemyHelicopter eh = enemyHelicopterList.get(j);
 
-					// If rocket's nose is in front of the enemy helicopter's tail, then...
-					if (hr.xCoord + hr.rocketImg.getWidth() < eh.xCoord + eh.heliBodyImg.getWidth()) {
+					// If rocket's nose is in front of the enemy helicopter's
+					// tail, then...
+					if (hr.xCoord + hr.rocketImg.getWidth() < eh.xCoord
+							+ eh.heliBodyImg.getWidth()) {
 						// ...seek the enemy helicopter
 						hr.Follow(eh);
 						break;
@@ -854,54 +826,29 @@ public class Game {
 
 			// Create rocket smoke
 			RocketSmoke rs = new RocketSmoke();
-			int xCoord = hr.xCoord - RocketSmoke.smokeImg.getWidth(); // Subtract
-																		// size
-																		// of
-																		// rocket
-																		// smoke
-																		// image
-																		// so
-																		// smoke
-																		// does
-																		// not
-																		// start
-																		// in
-																		// the
-																		// middle
-																		// of
-																		// the
-																		// rocket
-																		// image
-			int yCoord = hr.yCoord - 5 + rand.nextInt(6); // Subtract 5 so smoke
-															// will be at the
-															// middle of the
-															// rocket on y-axis.
-															// Randomly add
-															// number between 0
-															// and 6 so smoke
-															// line isn't a
-															// straight line
+			// Subtract size of rocket smoke image so smoke does not start in
+			// the middle of the rocket image
+			int xCoord = hr.xCoord - RocketSmoke.smokeImg.getWidth();
+			// Subtract 5 so smoke will be at the middle of the rocket on
+			// y-axis. Randomly add number between 0 and 6 so smoke line isn't a
+			// straight line
+			int yCoord = hr.yCoord - 5 + rand.nextInt(6);
 			rs.Initialize(xCoord, yCoord, gameTime, hr.currentSmokeLifeTime);
 			rocketSmokeList.add(rs);
 
 			// Because rocket is fast, we get empty space between smokes... so
 			// we add more smoke.
 			// The fast the rocket's speed, the larger the empty space
-			int smokePositionX = 5 + rand.nextInt(8); // Draw this smoke a
-														// little bit ahead of
-														// the one we drew
-														// before
+			// Draw this smoke a little bit ahead of the one we drew before
+			int smokePositionX = 5 + rand.nextInt(8);
 			rs = new RocketSmoke();
+			// Add so smoke will not be on same x-coord as previous smoke.
+			// First, add 5 because a random numer between 0 and 8 could be 0
+			// (which would mean it's on the same x-coord as previous).
 			xCoord = hr.xCoord - RocketSmoke.smokeImg.getWidth()
-					+ smokePositionX; // Add so smoke will not be on same
-										// x-coord as previous smoke. First, add
-										// 5 because a random numer between 0
-										// and 8 could be 0 (which would mean
-										// it's on the same x-coord as
-										// previous).
-			yCoord = hr.yCoord - 5 + rand.nextInt(6); // Subtract 5 so smoke
-														// will be at middle of
-														// rocket on y-axis
+					+ smokePositionX;
+			// Subtract 5 so smoke will be at middle of rocket on y-axis
+			yCoord = hr.yCoord - 5 + rand.nextInt(6);
 			rs.Initialize(xCoord, yCoord, gameTime, hr.currentSmokeLifeTime);
 			rocketSmokeList.add(rs);
 

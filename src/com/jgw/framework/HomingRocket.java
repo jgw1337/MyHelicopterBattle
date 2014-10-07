@@ -72,8 +72,11 @@ public class HomingRocket {
 		final int KILL_ZONE = 5;
 
 		// If rocket is high but within range
-		if (this.yCoord > eh.getYCenter() && this.yCoord <= eh.getYCenter() + RANGE) {
-			if (this.yCoord > eh.getYCenter() + BUTTER_ZONE || this.xCoord + this.rocketImg.getWidth() < eh.getXCenter() - eh.heliBodyImg.getWidth()) {
+		if (this.yCoord > eh.getYCenter()
+				&& this.yCoord <= eh.getYCenter() + RANGE) {
+			if (this.yCoord > eh.getYCenter() + BUTTER_ZONE
+					|| this.xCoord + this.rocketImg.getWidth() < eh
+							.getXCenter() - eh.heliBodyImg.getWidth()) {
 				currentYSpeed = currentYSpeed - 0.4;
 			} else if (this.yCoord > eh.getYCenter() + SWEET_SPOT) {
 				currentYSpeed = -2;
@@ -87,9 +90,12 @@ public class HomingRocket {
 				currentYSpeed = -maxYSpeed;
 			}
 
-		// else if rocket is low but within range
-		} else if (this.yCoord < eh.getYCenter() && this.yCoord >= eh.getYCenter() - RANGE) {
-			if (this.yCoord < eh.getYCenter() - BUTTER_ZONE || this.xCoord + this.rocketImg.getWidth() < eh.getXCenter() - eh.heliBodyImg.getWidth()) {
+			// else if rocket is low but within range
+		} else if (this.yCoord < eh.getYCenter()
+				&& this.yCoord >= eh.getYCenter() - RANGE) {
+			if (this.yCoord < eh.getYCenter() - BUTTER_ZONE
+					|| this.xCoord + this.rocketImg.getWidth() < eh
+							.getXCenter() - eh.heliBodyImg.getWidth()) {
 				currentYSpeed = currentYSpeed + 0.4;
 			} else if (this.yCoord < eh.getYCenter() - SWEET_SPOT) {
 				currentYSpeed = 2;
@@ -116,17 +122,18 @@ public class HomingRocket {
 	public void Draw(Graphics2D g2d) {
 		g2d.drawImage(rocketImg, xCoord, yCoord, null);
 
-		Font font = new Font("monospaced", Font.BOLD, 36);
-		;
-		String tmpStr = "x: " + xCoord + " :: y: " + yCoord;
-		g2d.setFont(font);
-		g2d.setColor(Color.BLACK);
-		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
-				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2) + 2,
-				Framework.frameHeight / 2);
-		g2d.setColor(Color.WHITE);
-		g2d.drawString(tmpStr, (Framework.frameWidth / 2)
-				- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-				Framework.frameHeight / 2 - 2);
+		/**
+		 * Debugging
+		 * 
+		 * Font font = new Font("monospaced", Font.BOLD, 36); String tmpStr =
+		 * "x: " + xCoord + " :: y: " + yCoord; g2d.setFont(font);
+		 * g2d.setColor(Color.BLACK); g2d.drawString(tmpStr,
+		 * (Framework.frameWidth / 2) -
+		 * (g2d.getFontMetrics().stringWidth(tmpStr) / 2) + 2,
+		 * Framework.frameHeight / 2); g2d.setColor(Color.WHITE);
+		 * g2d.drawString(tmpStr, (Framework.frameWidth / 2) -
+		 * (g2d.getFontMetrics().stringWidth(tmpStr) / 2), Framework.frameHeight
+		 * / 2 - 2);
+		 */
 	}
 }
