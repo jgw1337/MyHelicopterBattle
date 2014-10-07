@@ -234,9 +234,9 @@ public class Framework extends Canvas {
 			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 100);
 			tmpStr = "Select a character...";
 			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 180);
-			tmpStr = "[E]sther, [F]rank, [G]lenn,";
+			tmpStr = "[E]stair, [F]rakor, [G]lear,";
 			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 220);
-			tmpStr = "[J]ohn, [M]arcus, [W]ade, or any other key.";
+			tmpStr = "[J]ohr, [M]ark I, [W]aadger, or any other key.";
 			g2d.drawString(tmpStr, (frameWidth/2) - (g2d.getFontMetrics().stringWidth(tmpStr) / 2), frameHeight/2 + 260);
 			break;
 		case OPTIONS:
