@@ -15,7 +15,7 @@ public class HeroHelicopter {
 	// Health
 	private int healthInit;
 	public int health;
-	public float healthPercent;
+	private float healthPercent;
 
 	// Position
 	public int xCoord, yCoord;
@@ -455,20 +455,12 @@ public class HeroHelicopter {
 	}
 
 	public void DrawAvatar(Graphics2D g2d) {
-		g2d.drawString("health: " + Integer.toString(health),
-				Framework.frameWidth / 2, Framework.frameHeight / 2 - 100);
-		g2d.drawString("healthInit: " + Integer.toString(healthInit),
-				Framework.frameWidth / 2, Framework.frameHeight / 2 - 50);
 		healthPercent = (health * 100.0f) / healthInit;
 		g2d.drawImage(heliProfileImg, 10, 17, null);
 		if (healthPercent <= 50) {
 			g2d.drawImage(heliProfileImg50, 10, 17, null);
-			g2d.drawString("less than 50: " + Float.toString(healthPercent),
-					Framework.frameWidth / 2, Framework.frameHeight / 2);
 		} else if (healthPercent <= 75) {
 			g2d.drawImage(heliProfileImg75, 10, 17, null);
-			g2d.drawString("less than 75: " + Float.toString(healthPercent),
-					Framework.frameWidth / 2, Framework.frameHeight / 2);
 		}
 	}
 
