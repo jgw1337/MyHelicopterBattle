@@ -40,7 +40,7 @@ public class HeroHelicopter {
 
 	// Images
 	public BufferedImage heliBodyImg, heliProfileImg;
-	public BufferedImage heliProfileImg75, heliProfileImg50;
+	public BufferedImage heliProfileImg75, heliProfileImg50, heliProfileImg00;
 	private BufferedImage heliFrontPropellerAnimImg, heliRearPropellerAnimImg;
 
 	// Propeller animation
@@ -64,7 +64,7 @@ public class HeroHelicopter {
 
 	// Helicopter style
 	private String heliStyleStr, heliPlayerStr;
-	private String heliPlayerHealth75Str, heliPlayerHealth50Str;
+	private String heliPlayerHealth75Str, heliPlayerHealth50Str, heliPlayerHealth00Str;
 	public String style;
 
 	/**
@@ -257,6 +257,11 @@ public class HeroHelicopter {
 			URL heliProfileImgUrl50 = this.getClass().getResource(
 					heliPlayerHealth50Str);
 			heliProfileImg50 = ImageIO.read(heliProfileImgUrl50);
+
+			heliPlayerHealth00Str = "data/profile_health00.png";
+			URL heliProfileImgUrl00 = this.getClass().getResource(
+					heliPlayerHealth00Str);
+			heliProfileImg00 = ImageIO.read(heliProfileImgUrl00);
 
 			URL heliBodyImgUrl = this.getClass().getResource(heliStyleStr);
 			heliBodyImg = ImageIO.read(heliBodyImgUrl);
@@ -457,8 +462,10 @@ public class HeroHelicopter {
 	public void DrawAvatar(Graphics2D g2d) {
 		healthPercent = (health * 100.0f) / healthInit;
 		g2d.drawImage(heliProfileImg, 10, 17, null);
-		if (healthPercent <= 50) {
-			g2d.drawImage(heliProfileImg50, 10, 17, null);
+		if (healthPercent <= 0) {
+			g2d.drawImage(heliProfileImg00, 10, 17, null);
+		} else if (healthPercent <= 50) {
+				g2d.drawImage(heliProfileImg50, 10, 17, null);
 		} else if (healthPercent <= 75) {
 			g2d.drawImage(heliProfileImg75, 10, 17, null);
 		}

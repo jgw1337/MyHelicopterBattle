@@ -314,9 +314,9 @@ public class Game {
 		// Player
 		if (isPlayerAlive()) {
 			player.Draw(g2d);
-			player.DrawAvatar(g2d);
 			statXCoord = 10 + player.heliProfileImg.getWidth() + 10;
 		}
+		player.DrawAvatar(g2d);
 
 		// Enemies
 		for (int i = 0; i < enemyHelicopterList.size(); i++) {
