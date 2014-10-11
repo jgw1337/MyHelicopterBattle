@@ -114,8 +114,8 @@ public class HeroHelicopter {
 		this.rocketLauncherXCoord = this.xCoord + this.offsetXRocketLauncher;
 		this.rocketLauncherYCoord = this.yCoord + this.offsetYRocketLauncher;
 
-		this.offsetXGun = heliBodyImg.getWidth() - 40;
-		this.offsetYGun = heliBodyImg.getHeight();
+		this.offsetXGun = heliBodyImg.getWidth() + this.offsetXGun;
+		this.offsetYGun = heliBodyImg.getHeight() + this.offsetYGun;
 		this.gunXCoord = this.xCoord + this.offsetXGun;
 		this.gunYCoord = this.yCoord + this.offsetYGun;
 	}
@@ -142,6 +142,8 @@ public class HeroHelicopter {
 				this.acceleratingYSpeed = 0.4;
 				this.stoppingXSpeed = 0.4;
 				this.stoppingYSpeed = 0.4;
+				this.offsetXGun = -5;
+				this.offsetYGun = -5;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_F) {
 				style = "frank";
 				heliStyleStr = "data/1_helicopter_body_frank.png";
@@ -159,6 +161,8 @@ public class HeroHelicopter {
 				this.acceleratingYSpeed = 0.2;
 				this.stoppingXSpeed = 0.1;
 				this.stoppingYSpeed = 0.1;
+				this.offsetXGun = -70;
+				this.offsetYGun = -7;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_G) {
 				style = "glenn";
 				heliStyleStr = "data/1_helicopter_body_glenn.png";
@@ -176,6 +180,8 @@ public class HeroHelicopter {
 				this.acceleratingYSpeed = 0.2;
 				this.stoppingXSpeed = 0.1;
 				this.stoppingYSpeed = 0.1;
+				this.offsetXGun = -50;
+				this.offsetYGun = -53;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_I) {
 				style = "ian";
 				heliStyleStr = "data/1_helicopter_body_ian.png";
@@ -193,6 +199,8 @@ public class HeroHelicopter {
 				this.acceleratingYSpeed = 0.2;
 				this.stoppingXSpeed = 0.3;
 				this.stoppingYSpeed = 0.1;
+				this.offsetXGun = -10;
+				this.offsetYGun = -5;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_J) {
 				style = "john";
 				heliStyleStr = "data/1_helicopter_body_john.png";
@@ -210,6 +218,8 @@ public class HeroHelicopter {
 				this.acceleratingYSpeed = 0.2;
 				this.stoppingXSpeed = 0.1;
 				this.stoppingYSpeed = 0.1;
+				this.offsetXGun = -50;
+				this.offsetYGun = -30;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_M) {
 				style = "marcus";
 				heliStyleStr = "data/1_helicopter_body_marcus.png";
@@ -227,6 +237,8 @@ public class HeroHelicopter {
 				this.acceleratingYSpeed = 0.2;
 				this.stoppingXSpeed = 0.1;
 				this.stoppingYSpeed = 0.1;
+				this.offsetXGun = -50;
+				this.offsetYGun = -20;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_W) {
 				style = "wade";
 				heliStyleStr = "data/1_helicopter_body_wade.png";
@@ -244,6 +256,8 @@ public class HeroHelicopter {
 				this.acceleratingYSpeed = 0.2;
 				this.stoppingXSpeed = 0.1;
 				this.stoppingYSpeed = 0.1;
+				this.offsetXGun = -30;
+				this.offsetYGun = -20;
 			} else {
 				style = "default";
 				heliStyleStr = "data/1_helicopter_body.png";
@@ -261,6 +275,8 @@ public class HeroHelicopter {
 				this.acceleratingYSpeed = 0.2;
 				this.stoppingXSpeed = 0.1;
 				this.stoppingYSpeed = 0.1;
+				this.offsetXGun = -40;
+				this.offsetYGun = -10;
 			}
 			URL heliProfileImgUrl = this.getClass().getResource(heliPlayerStr);
 			heliProfileImg = ImageIO.read(heliProfileImgUrl);
