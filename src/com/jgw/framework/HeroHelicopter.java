@@ -168,13 +168,30 @@ public class HeroHelicopter {
 				this.numberOfRockets = 10;
 				this.numberOfHomingRockets = 25;
 				this.numberOfBullets = 100;
-				this.offsetXFrontPropeller = 70;
-				this.offsetYFrontPropeller = -23;
-				this.offsetXRearPropeller = -6;
-				this.offsetYRearPropeller = -21;
+				this.offsetXFrontPropeller = 30;
+				this.offsetYFrontPropeller = -30;
+				this.offsetXRearPropeller = 5;
+				this.offsetYRearPropeller = -10;
 				this.acceleratingXSpeed = 0.2;
 				this.acceleratingYSpeed = 0.2;
 				this.stoppingXSpeed = 0.1;
+				this.stoppingYSpeed = 0.1;
+			} else if (heliStyle.getKeyCode() == KeyEvent.VK_I) {
+				style = "ian";
+				heliStyleStr = "data/1_helicopter_body_ian.png";
+				heliPlayerStr = "data/profile_i.jpg";
+				this.healthInit = 100;
+				this.health = healthInit;
+				this.numberOfRockets = 1000;
+				this.numberOfHomingRockets = 0;
+				this.numberOfBullets = 5000;
+				this.offsetXFrontPropeller = 5;
+				this.offsetYFrontPropeller = -10;
+				this.offsetXRearPropeller = -3;
+				this.offsetYRearPropeller = 40;
+				this.acceleratingXSpeed = 0.2;
+				this.acceleratingYSpeed = 0.2;
+				this.stoppingXSpeed = 0.3;
 				this.stoppingYSpeed = 0.1;
 			} else if (heliStyle.getKeyCode() == KeyEvent.VK_J) {
 				style = "john";
@@ -230,7 +247,7 @@ public class HeroHelicopter {
 			} else {
 				style = "default";
 				heliStyleStr = "data/1_helicopter_body.png";
-				heliPlayerStr = "data/profile_j.jpg";
+				heliPlayerStr = "data/profile_trinity.jpg";
 				this.healthInit = 100;
 				this.health = healthInit;
 				this.numberOfRockets = numberOfRocketsInit;

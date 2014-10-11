@@ -235,28 +235,34 @@ public class Framework extends Canvas {
 			tmpStr = "Use w-a-s-d or arrow keys to move the helicopter.";
 			g2d.drawString(tmpStr, (frameWidth / 2)
 					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-					frameHeight / 2 - 60);
+					frameHeight / 2 - 100);
 			tmpStr = "Use left mouse button to fire bullets.";
 			g2d.drawString(tmpStr, (frameWidth / 2)
 					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-					frameHeight / 2 - 20);
+					frameHeight / 2 - 60);
 			tmpStr = "Use right mouse button to fire rockets.";
 			g2d.drawString(tmpStr, (frameWidth / 2)
 					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-					frameHeight / 2 + 20);
-			tmpStr = "Press any key to start the game or ESC to exit.";
+					frameHeight / 2 - 20);
+			tmpStr = "Use center mouse button to fire homing rockets.";
 			g2d.drawString(tmpStr, (frameWidth / 2)
 					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-					frameHeight / 2 + 100);
+					frameHeight / 2 + 20);
+
 			tmpStr = "Select a character...";
 			g2d.drawString(tmpStr, (frameWidth / 2)
 					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-					frameHeight / 2 + 180);
-			tmpStr = "[E]stair, [F]rakor, [G]lear,";
+					frameHeight / 2 + 100);
+			tmpStr = "[E]stair, [F]rakor, [G]lear, [I]on,";
 			g2d.drawString(tmpStr, (frameWidth / 2)
 					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
-					frameHeight / 2 + 220);
+					frameHeight / 2 + 140);
 			tmpStr = "[J]ohr, [M]ark I, [W]aadger, or any other key.";
+			g2d.drawString(tmpStr, (frameWidth / 2)
+					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
+					frameHeight / 2 + 180);
+
+			tmpStr = "Or, press ESC to quit.";
 			g2d.drawString(tmpStr, (frameWidth / 2)
 					- (g2d.getFontMetrics().stringWidth(tmpStr) / 2),
 					frameHeight / 2 + 260);
