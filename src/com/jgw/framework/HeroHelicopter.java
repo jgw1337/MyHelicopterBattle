@@ -262,7 +262,7 @@ public class HeroHelicopter {
 				style = "default";
 				heliStyleStr = "data/1_helicopter_body.png";
 				heliPlayerStr = "data/profile_trinity.jpg";
-				this.healthInit = 100;
+				this.healthInit = 450;
 				this.health = healthInit;
 				this.numberOfRockets = numberOfRocketsInit;
 				this.numberOfHomingRockets = numberOfHomingRocketsInit;
