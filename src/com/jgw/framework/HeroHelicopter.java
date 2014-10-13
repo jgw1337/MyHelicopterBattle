@@ -129,7 +129,7 @@ public class HeroHelicopter {
 				style = "esther";
 				heliStyleStr = "data/1_helicopter_body_esther.png";
 				heliPlayerStr = "data/profile_e.jpg";
-				this.healthInit = 100;
+				this.healthInit = 150;
 				this.health = healthInit;
 				this.numberOfRockets = 0;
 				this.numberOfHomingRockets = 100;
@@ -148,7 +148,7 @@ public class HeroHelicopter {
 				style = "frank";
 				heliStyleStr = "data/1_helicopter_body_frank.png";
 				heliPlayerStr = "data/profile_f.jpg";
-				this.healthInit = 50;
+				this.healthInit = 150;
 				this.health = healthInit;
 				this.numberOfRockets = 5;
 				this.numberOfHomingRockets = 5;
@@ -167,7 +167,7 @@ public class HeroHelicopter {
 				style = "glenn";
 				heliStyleStr = "data/1_helicopter_body_glenn.png";
 				heliPlayerStr = "data/profile_g.jpg";
-				this.healthInit = 50;
+				this.healthInit = 150;
 				this.health = healthInit;
 				this.numberOfRockets = 10;
 				this.numberOfHomingRockets = 25;
@@ -186,7 +186,7 @@ public class HeroHelicopter {
 				style = "ian";
 				heliStyleStr = "data/1_helicopter_body_ian.png";
 				heliPlayerStr = "data/profile_i.jpg";
-				this.healthInit = 100;
+				this.healthInit = 150;
 				this.health = healthInit;
 				this.numberOfRockets = 1000;
 				this.numberOfHomingRockets = 0;
@@ -205,7 +205,7 @@ public class HeroHelicopter {
 				style = "john";
 				heliStyleStr = "data/1_helicopter_body_john.png";
 				heliPlayerStr = "data/profile_j.jpg";
-				this.healthInit = 100;
+				this.healthInit = 150;
 				this.health = healthInit;
 				this.numberOfRockets = 15;
 				this.numberOfHomingRockets = 15;
